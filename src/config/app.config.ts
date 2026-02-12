@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch } from "lucide-react";
+import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch, Shield } from "lucide-react";
 
 export interface ModuleConfig {
   id: number;
@@ -75,5 +75,14 @@ export const MODULES: ModuleConfig[] = [
     icon: GitBranch,
     stepCount: 6,
     path: "/module/7",
+  },
+  {
+    id: 8,
+    name: "Guardrails",
+    description:
+      "Learn how to protect AI agents with input validation, output filtering, and safety guardrails.",
+    icon: Shield,
+    stepCount: 6,
+    path: "/module/8",
   },
 ];
