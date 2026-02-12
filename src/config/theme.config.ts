@@ -53,4 +53,6 @@ export const STATUS_COLORS = {
 /** Layout dimensions */
 export const LAYOUT = {
   sidebarWidthPx: 280,
+  /** Minimum content area width before sidebar auto-collapses */
+  contentMinWidthPx: 700,
 } as const;

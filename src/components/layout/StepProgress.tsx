@@ -9,7 +9,7 @@ export function StepProgress() {
   const progressPercent = (currentStep / totalSteps) * 100;
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3" data-slot="step-progress">
       <span className="text-sm text-muted-foreground whitespace-nowrap">
         Step {currentStep} of {totalSteps}
       </span>

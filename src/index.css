@@ -120,9 +120,46 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
       Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Minimum readable font size for projector displays */
+    font-size: 16px;
+  }
+
+  /* Headings should be larger for projector visibility */
+  h1 {
+    @apply text-3xl font-bold;
+  }
+  h2 {
+    @apply text-2xl font-semibold;
+  }
+  h3 {
+    @apply text-xl font-semibold;
+  }
+
+  /* Visible focus outlines for keyboard navigation */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+/* Print-friendly: hide sidebar and navigation controls */
+@media print {
+  aside,
+  [data-slot="step-controls"],
+  [data-slot="step-progress"],
+  button[aria-label="Expand sidebar"],
+  button[aria-label="Collapse sidebar"] {
+    display: none !important;
+  }
+
+  main {
+    margin-left: 0 !important;
   }
 }
