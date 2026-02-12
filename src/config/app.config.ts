@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Bot, Users, Plug, Database } from "lucide-react";
+import { Bot, Users, Plug, Database, BookOpen } from "lucide-react";
 
 export interface ModuleConfig {
   id: number;
@@ -48,5 +48,14 @@ export const MODULES: ModuleConfig[] = [
     icon: Database,
     stepCount: 6,
     path: "/module/4",
+  },
+  {
+    id: 5,
+    name: "RAG",
+    description:
+      "Discover how Retrieval-Augmented Generation grounds LLM answers in real documents and knowledge bases.",
+    icon: BookOpen,
+    stepCount: 6,
+    path: "/module/5",
   },
 ];
