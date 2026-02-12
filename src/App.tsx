@@ -21,6 +21,7 @@ const Module2 = lazy(() => import("@/modules/Module2/index"));
 const Module3 = lazy(() => import("@/modules/Module3/index"));
 const Module4 = lazy(() => import("@/modules/Module4/index"));
 const Module5 = lazy(() => import("@/modules/Module5/index"));
+const Module6 = lazy(() => import("@/modules/Module6/index"));
 
 /* ------------------------------------------------------------------ */
 /*  Loading fallback with animated spinner                             */
@@ -137,6 +138,7 @@ export default function App() {
                   <Route path="module/3" element={<Module3 />} />
                   <Route path="module/4" element={<Module4 />} />
                   <Route path="module/5" element={<Module5 />} />
+                  <Route path="module/6" element={<Module6 />} />
                 </Route>
               </Routes>
             </Suspense>

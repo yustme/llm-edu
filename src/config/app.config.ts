@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Bot, Users, Plug, Database, BookOpen } from "lucide-react";
+import { Bot, Users, Plug, Database, BookOpen, Wrench } from "lucide-react";
 
 export interface ModuleConfig {
   id: number;
@@ -57,5 +57,14 @@ export const MODULES: ModuleConfig[] = [
     icon: BookOpen,
     stepCount: 6,
     path: "/module/5",
+  },
+  {
+    id: 6,
+    name: "Tool Use",
+    description:
+      "Learn how LLMs use function calling to interact with external tools, APIs, and services.",
+    icon: Wrench,
+    stepCount: 6,
+    path: "/module/6",
   },
 ];
