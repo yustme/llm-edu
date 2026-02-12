@@ -22,3 +22,11 @@ export const SIMULATION = {
 } as const;
 
 export type SpeedMultiplier = (typeof SIMULATION.speedMultipliers)[number];
+
+export const FORMATTING = {
+  /** Default currency code for formatCurrency */
+  defaultCurrency: "CZK",
+
+  /** Number of spaces for JSON indentation */
+  jsonIndentSpaces: 2,
+} as const;
