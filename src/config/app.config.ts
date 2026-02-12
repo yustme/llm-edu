@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch, Shield } from "lucide-react";
+import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch, Shield, ClipboardCheck } from "lucide-react";
 
 export interface ModuleConfig {
   id: number;
@@ -84,5 +84,14 @@ export const MODULES: ModuleConfig[] = [
     icon: Shield,
     stepCount: 6,
     path: "/module/8",
+  },
+  {
+    id: 9,
+    name: "Evaluation",
+    description:
+      "Learn how to evaluate AI agent quality with metrics, test suites, and LLM-as-Judge patterns.",
+    icon: ClipboardCheck,
+    stepCount: 6,
+    path: "/module/9",
   },
 ];
