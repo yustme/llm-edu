@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Bot, Users, Plug, Database, BookOpen, Wrench } from "lucide-react";
+import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch } from "lucide-react";
 
 export interface ModuleConfig {
   id: number;
@@ -66,5 +66,14 @@ export const MODULES: ModuleConfig[] = [
     icon: Wrench,
     stepCount: 6,
     path: "/module/6",
+  },
+  {
+    id: 7,
+    name: "Agentic Workflows",
+    description:
+      "Explore orchestration patterns: sequential pipelines, parallel fan-out, routers, and evaluator-optimizer loops.",
+    icon: GitBranch,
+    stepCount: 6,
+    path: "/module/7",
   },
 ];

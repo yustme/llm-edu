@@ -11,7 +11,7 @@ import { MODULES } from "@/config/app.config";
  * Right Arrow -> next step (within module)
  * Space       -> toggle play/pause simulation
  * Escape      -> reset simulation
- * 1-6         -> jump to module (navigate to /module/1 through /module/6)
+ * 1-7         -> jump to module (navigate to /module/1 through /module/7)
  * 0 or Home   -> go to home page (navigate to /)
  *
  * Keys are ignored when an input or textarea is focused.
@@ -77,7 +77,8 @@ export function useKeyboardNavigation(): void {
         case "3":
         case "4":
         case "5":
-        case "6": {
+        case "6":
+        case "7": {
           const moduleIndex = Number(event.key) - 1;
           const targetModule = MODULES[moduleIndex];
           if (targetModule) {
