@@ -7,10 +7,20 @@ import type { SpeedMultiplier } from "@/config/simulation.config";
 /**
  * React hook that creates and manages a SimulationEngine instance,
  * syncing its state with the simulation Zustand store.
+ *
+ * Uses selectors and getState() to avoid subscribing to the entire
+ * store object, which would cause infinite re-render loops when
+ * actions update state.
  */
 export function useSimulation(steps: SimulationStep[]) {
-  const store = useSimulationStore();
   const engineRef = useRef<SimulationEngine | null>(null);
+
+  // Subscribe only to the values we need for rendering
+  const visibleSteps = useSimulationStore((s) => s.visibleSteps);
+  const isPlaying = useSimulationStore((s) => s.isPlaying);
+  const currentStepIndex = useSimulationStore((s) => s.currentStepIndex);
+  const storeSteps = useSimulationStore((s) => s.steps);
+  const speed = useSimulationStore((s) => s.speed);
 
   // Initialize engine and sync steps to store
   useEffect(() => {
@@ -35,47 +45,40 @@ export function useSimulation(steps: SimulationStep[]) {
     });
 
     engineRef.current = engine;
-    store.setSteps(steps);
+    useSimulationStore.getState().setSteps(steps);
 
     return () => {
       engine.destroy();
     };
-    // Only re-create engine when steps array reference changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steps]);
 
   const play = useCallback(() => {
     engineRef.current?.play();
-    store.play();
-  }, [store]);
+    useSimulationStore.getState().play();
+  }, []);
 
   const pause = useCallback(() => {
     engineRef.current?.pause();
-    store.pause();
-  }, [store]);
+    useSimulationStore.getState().pause();
+  }, []);
 
   const reset = useCallback(() => {
     engineRef.current?.reset();
-    store.reset();
-  }, [store]);
+    useSimulationStore.getState().reset();
+  }, []);
 
   const nextStep = useCallback(() => {
     engineRef.current?.nextStep();
-    // Store is synced via onStepChange callback
   }, []);
 
   const prevStep = useCallback(() => {
     engineRef.current?.prevStep();
-    // Store is synced via onStepChange callback
   }, []);
 
-  const setSpeed = useCallback(
-    (multiplier: SpeedMultiplier) => {
-      engineRef.current?.setSpeed(multiplier);
-      store.setSpeed(multiplier);
-    },
-    [store],
-  );
+  const setSpeed = useCallback((multiplier: SpeedMultiplier) => {
+    engineRef.current?.setSpeed(multiplier);
+    useSimulationStore.getState().setSpeed(multiplier);
+  }, []);
 
   return {
     play,
@@ -85,14 +88,14 @@ export function useSimulation(steps: SimulationStep[]) {
     prevStep,
     setSpeed,
     currentStep:
-      store.currentStepIndex >= 0
-        ? store.steps[store.currentStepIndex] ?? null
+      currentStepIndex >= 0
+        ? storeSteps[currentStepIndex] ?? null
         : null,
-    visibleSteps: store.visibleSteps,
-    isPlaying: store.isPlaying,
+    visibleSteps,
+    isPlaying,
     isComplete:
-      store.currentStepIndex >= 0 &&
-      store.currentStepIndex >= store.steps.length - 1,
-    speed: store.speed,
+      currentStepIndex >= 0 &&
+      currentStepIndex >= storeSteps.length - 1,
+    speed,
   };
 }
