@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch, Shield, ClipboardCheck, Zap } from "lucide-react";
+import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch, Shield, ClipboardCheck, Zap, SearchCheck, ArrowRightLeft } from "lucide-react";
 
 export interface ModuleConfig {
   id: number;
@@ -102,5 +102,32 @@ export const MODULES: ModuleConfig[] = [
     icon: Zap,
     stepCount: 6,
     path: "/module/10",
+  },
+  {
+    id: 11,
+    name: "Text-to-SQL",
+    description:
+      "Learn how AI agents translate natural language questions into SQL queries against real databases.",
+    icon: Database,
+    stepCount: 6,
+    path: "/module/11",
+  },
+  {
+    id: 12,
+    name: "Data Quality",
+    description:
+      "Discover how AI agents detect and fix data quality issues: missing values, duplicates, and outliers.",
+    icon: SearchCheck,
+    stepCount: 6,
+    path: "/module/12",
+  },
+  {
+    id: 13,
+    name: "ETL/ELT",
+    description:
+      "See how AI agents automate data pipelines with intelligent schema mapping and transformation.",
+    icon: ArrowRightLeft,
+    stepCount: 6,
+    path: "/module/13",
   },
 ];
