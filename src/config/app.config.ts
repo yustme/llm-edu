@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch, Shield, ClipboardCheck } from "lucide-react";
+import { Bot, Users, Plug, Database, BookOpen, Wrench, GitBranch, Shield, ClipboardCheck, Zap } from "lucide-react";
 
 export interface ModuleConfig {
   id: number;
@@ -93,5 +93,14 @@ export const MODULES: ModuleConfig[] = [
     icon: ClipboardCheck,
     stepCount: 6,
     path: "/module/9",
+  },
+  {
+    id: 10,
+    name: "Cost & Latency",
+    description:
+      "Optimize AI agent performance by understanding and reducing costs and latency.",
+    icon: Zap,
+    stepCount: 6,
+    path: "/module/10",
   },
 ];
