@@ -1,4 +1,4 @@
-import { lazy, Suspense, Component } from "react";
+import { lazy, Suspense, Component, useEffect } from "react";
 import type { ReactNode, ErrorInfo } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router";
 import { motion } from "framer-motion";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
+import { useThemeStore, applyTheme } from "@/stores/theme.store";
 
 const Home = lazy(() => import("@/modules/Home/index"));
 const Module1 = lazy(() => import("@/modules/Module1/index"));
@@ -131,6 +132,19 @@ function KeyboardNavigationProvider({
 /* ------------------------------------------------------------------ */
 
 export default function App() {
+  const theme = useThemeStore((s) => s.theme);
+
+  useEffect(() => {
+    applyTheme(theme);
+
+    if (theme !== "system") return;
+
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = () => applyTheme("system");
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [theme]);
+
   return (
     <BrowserRouter>
       <TooltipProvider>
