@@ -1,207 +1,188 @@
 import { motion } from "framer-motion";
-import {
-  Brain,
-  Wrench,
-  RefreshCw,
-  Database as DatabaseIcon,
-  Globe,
-  FileText,
-  Search,
-} from "lucide-react";
+import { Check, X } from "lucide-react";
 import { InfoPanel } from "@/components/presentation/InfoPanel";
 import { InteractiveArea } from "@/components/presentation/InteractiveArea";
+import { TOKENIZATION_APPROACHES } from "../data";
 
-const STAGGER_DELAY = 0.15;
+const STAGGER_DELAY = 0.1;
 const ANIMATION_DURATION = 0.4;
 
-/** Static architecture diagram for the summary */
-function ArchitectureDiagram() {
-  const tools = [
-    { icon: DatabaseIcon, label: "SQL Database" },
-    { icon: Globe, label: "REST API" },
-    { icon: FileText, label: "File System" },
-    { icon: Search, label: "Web Search" },
-  ];
+const TABLE_HEADER_STYLE =
+  "px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground";
+const TABLE_CELL_STYLE = "px-3 py-2 text-sm";
 
-  return (
-    <div className="flex flex-col items-center gap-6 py-4">
-      {/* Agent container */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="flex w-full max-w-md flex-col items-center gap-4 rounded-2xl border-2 border-primary/20 bg-primary/5 p-6"
-      >
-        <span className="text-xs font-bold uppercase tracking-wide text-primary">
-          AI Agent
-        </span>
-
-        {/* LLM core */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: ANIMATION_DURATION }}
-          className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 border-2 border-purple-300"
-        >
-          <Brain className="h-8 w-8 text-purple-600" />
-        </motion.div>
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.3 }}
-          className="text-sm font-semibold text-purple-700"
-        >
-          LLM Core
-        </motion.span>
-
-        {/* Reasoning Loop */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: ANIMATION_DURATION }}
-          className="flex items-center gap-2 rounded-full bg-amber-100 px-4 py-2 border border-amber-200"
-        >
-          <RefreshCw className="h-4 w-4 text-amber-600" />
-          <span className="text-xs font-medium text-amber-700">
-            Think &rarr; Act &rarr; Observe &rarr; Repeat
-          </span>
-        </motion.div>
-
-        {/* Memory */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: ANIMATION_DURATION }}
-          className="flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 border border-green-200"
-        >
-          <DatabaseIcon className="h-4 w-4 text-green-600" />
-          <span className="text-xs font-medium text-green-700">
-            Conversation History + Context
-          </span>
-        </motion.div>
-      </motion.div>
-
-      {/* Connection line */}
-      <motion.div
-        initial={{ scaleY: 0 }}
-        animate={{ scaleY: 1 }}
-        transition={{ delay: 0.9, duration: 0.3 }}
-        className="h-6 w-px bg-border origin-top"
-      />
-
-      {/* Tools row */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.0, duration: ANIMATION_DURATION }}
-        className="flex flex-col items-center gap-3"
-      >
-        <div className="flex items-center gap-2">
-          <Wrench className="h-4 w-4 text-blue-600" />
-          <span className="text-xs font-bold uppercase tracking-wide text-blue-700">
-            Tools
-          </span>
-        </div>
-        <div className="flex flex-wrap justify-center gap-3">
-          {tools.map((tool, index) => (
-            <motion.div
-              key={tool.label}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                delay: 1.1 + index * STAGGER_DELAY,
-                duration: 0.3,
-              }}
-              className="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 border border-blue-200"
-            >
-              <tool.icon className="h-4 w-4 text-blue-600" />
-              <span className="text-xs font-medium text-blue-700">
-                {tool.label}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-    </div>
-  );
-}
+const KEY_TAKEAWAYS = [
+  {
+    id: "tokenization-first",
+    label: "Tokenization is the first step",
+    description:
+      "Every LLM converts text to token IDs before any processing happens. The tokenizer defines what the model can see.",
+  },
+  {
+    id: "bpe-standard",
+    label: "BPE is the industry standard",
+    description:
+      "Byte Pair Encoding balances vocabulary size with sequence length. Most modern models use BPE or its variants.",
+  },
+  {
+    id: "embeddings-semantic",
+    label: "Embeddings capture meaning",
+    description:
+      "Dense vectors learned during training encode semantic relationships. Similar words have similar vectors.",
+  },
+  {
+    id: "cost-impact",
+    label: "Tokens directly affect cost",
+    description:
+      "API pricing is per-token. Efficient tokenization (fewer tokens for the same content) reduces both cost and latency.",
+  },
+] as const;
 
 export function Step6Summary() {
   return (
     <div className="flex gap-8">
-      {/* Left: Info panel (~40%) */}
       <div className="w-2/5 shrink-0">
-        <InfoPanel title="Key Takeaways" highlights={["Agent", "LLM", "Tools"]}>
-          <ul className="list-none space-y-4 pl-0">
-            <motion.li
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: ANIMATION_DURATION }}
-            >
-              <span className="font-semibold text-foreground">
-                An AI agent extends LLMs with real-world capabilities.
-              </span>{" "}
-              By adding tools, a reasoning loop, and memory, agents can access
-              databases, call APIs, and perform actions that a plain LLM cannot.
-            </motion.li>
-
-            <motion.li
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: 0.2 + STAGGER_DELAY,
-                duration: ANIMATION_DURATION,
-              }}
-            >
-              <span className="font-semibold text-foreground">
-                The reasoning loop enables multi-step problem solving.
-              </span>{" "}
-              Instead of generating a single response, agents think about what
-              they need, take actions, observe results, and iterate until the
-              task is complete.
-            </motion.li>
-
-            <motion.li
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: 0.2 + STAGGER_DELAY * 2,
-                duration: ANIMATION_DURATION,
-              }}
-            >
-              <span className="font-semibold text-foreground">
-                Tools give agents real-world capabilities.
-              </span>{" "}
-              SQL databases, REST APIs, file systems, web search - tools are the
-              bridge between the LLM's intelligence and external data and
-              systems.
-            </motion.li>
-
-            <motion.li
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: 0.2 + STAGGER_DELAY * 3,
-                duration: ANIMATION_DURATION,
-              }}
-            >
-              <span className="font-semibold text-foreground">
-                Memory provides continuity and context.
-              </span>{" "}
-              Agents track conversation history and accumulated context, allowing
-              them to make informed decisions across multiple interactions.
-            </motion.li>
+        <InfoPanel
+          title="Key Takeaways"
+          highlights={["BPE", "Embeddings", "Cost"]}
+        >
+          <p>
+            Tokenization and vectorization form the{" "}
+            <strong>foundation layer</strong> of every language model. Understanding
+            them helps you:
+          </p>
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              <strong>Estimate costs</strong> - know how many tokens your
+              prompts consume
+            </li>
+            <li>
+              <strong>Debug behavior</strong> - understand why the model
+              struggles with certain inputs (e.g. rare languages, long numbers)
+            </li>
+            <li>
+              <strong>Optimize context</strong> - fit more information into the
+              context window
+            </li>
+            <li>
+              <strong>Build RAG systems</strong> - embedding similarity powers
+              retrieval (Module 5)
+            </li>
           </ul>
+          <p>
+            The table on the right compares the three main tokenization
+            approaches. Modern LLMs use <strong>subword (BPE)</strong> because
+            it offers the best trade-off.
+          </p>
         </InfoPanel>
       </div>
 
-      {/* Right: Interactive area (~60%) */}
       <div className="flex-1">
-        <InteractiveArea>
-          <p className="mb-2 text-center text-sm font-medium text-muted-foreground">
-            Complete Agent Architecture
-          </p>
-          <ArchitectureDiagram />
+        <InteractiveArea className="space-y-6">
+          {/* Comparison table */}
+          <div>
+            <p className="mb-3 text-center text-sm font-medium text-muted-foreground">
+              Tokenization Approaches Compared
+            </p>
+            <div className="overflow-hidden rounded-lg border">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b bg-muted/40">
+                    <th className={TABLE_HEADER_STYLE}>Approach</th>
+                    <th className={TABLE_HEADER_STYLE}>Example</th>
+                    <th className={TABLE_HEADER_STYLE}>Vocab</th>
+                    <th className={TABLE_HEADER_STYLE}>Pros</th>
+                    <th className={TABLE_HEADER_STYLE}>Cons</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {TOKENIZATION_APPROACHES.map((approach, rowIndex) => (
+                    <motion.tr
+                      key={approach.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: 0.3 + rowIndex * STAGGER_DELAY,
+                        duration: ANIMATION_DURATION,
+                      }}
+                      className="border-b last:border-b-0"
+                    >
+                      <td className={`${TABLE_CELL_STYLE} font-medium`}>
+                        {approach.name}
+                      </td>
+                      <td
+                        className={`${TABLE_CELL_STYLE} font-mono text-xs text-muted-foreground`}
+                      >
+                        {approach.example}
+                      </td>
+                      <td className={`${TABLE_CELL_STYLE} text-xs`}>
+                        {approach.vocabSize}
+                      </td>
+                      <td className={TABLE_CELL_STYLE}>
+                        <ul className="space-y-0.5">
+                          {approach.pros.map((pro) => (
+                            <li
+                              key={pro}
+                              className="flex items-start gap-1 text-xs"
+                            >
+                              <Check className="mt-0.5 h-3 w-3 shrink-0 text-green-500" />
+                              <span>{pro}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </td>
+                      <td className={TABLE_CELL_STYLE}>
+                        <ul className="space-y-0.5">
+                          {approach.cons.map((con) => (
+                            <li
+                              key={con}
+                              className="flex items-start gap-1 text-xs"
+                            >
+                              <X className="mt-0.5 h-3 w-3 shrink-0 text-red-500" />
+                              <span>{con}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Key takeaways */}
+          <div>
+            <p className="mb-3 text-center text-sm font-medium text-muted-foreground">
+              Key Takeaways
+            </p>
+            <div className="space-y-2">
+              {KEY_TAKEAWAYS.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: 0.8 + index * STAGGER_DELAY,
+                    duration: ANIMATION_DURATION,
+                  }}
+                  className="flex items-start gap-3 rounded-lg border bg-card p-3"
+                >
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {item.label}
+                    </p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </InteractiveArea>
       </div>
     </div>

@@ -1,8 +1,9 @@
-import { type ReactNode, useState, useCallback, useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Maximize2, Minimize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { usePresentationStore } from "@/stores/presentation.store";
 
 interface InteractiveAreaProps {
   children: ReactNode;
@@ -20,22 +21,9 @@ export function InteractiveArea({
   className,
   allowFullscreen = true,
 }: InteractiveAreaProps) {
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
-
-  useEffect(() => {
-    if (!isFullscreen) return;
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setIsFullscreen(false);
-      }
-    }
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [isFullscreen]);
+  const isFullscreen = usePresentationStore((s) => s.isFullscreen);
+  const toggleFullscreen = usePresentationStore((s) => s.toggleFullscreen);
+  const fontScale = usePresentationStore((s) => s.fontScale);
 
   // Prevent body scroll when fullscreen
   useEffect(() => {
@@ -65,7 +53,7 @@ export function InteractiveArea({
               size="icon"
               className="absolute right-2 top-2 z-10 h-8 w-8 text-muted-foreground hover:text-foreground"
               onClick={toggleFullscreen}
-              title="Fullscreen (Esc to exit)"
+              title="Fullscreen (B)"
             >
               <Maximize2 className="h-4 w-4" />
             </Button>
@@ -83,6 +71,7 @@ export function InteractiveArea({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-50 flex flex-col bg-background"
+            style={{ zoom: fontScale / 100 }}
           >
             {/* Top bar */}
             <div className="flex items-center justify-end border-b px-4 py-2">
@@ -98,7 +87,7 @@ export function InteractiveArea({
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-auto p-8">
+            <div className={cn("flex-1 overflow-auto p-8", className)}>
               {children}
             </div>
           </motion.div>

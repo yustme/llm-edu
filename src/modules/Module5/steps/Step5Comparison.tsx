@@ -2,50 +2,51 @@ import { motion } from "framer-motion";
 import { X, Check } from "lucide-react";
 import { ComparisonView } from "@/components/presentation/ComparisonView";
 import {
-  getWithoutRagFinalResponse,
-  getWithRagFinalResponse,
-  RAG_DEMO_QUERY,
-} from "@/data/mock-rag";
-import { RAG_COMPARISON_TABLE } from "../data";
+  getPlainLlmFinalResponse,
+  getAgentFinalResponse,
+} from "@/data/mock-llm-responses";
+import { COMPARISON_TABLE } from "../data";
+
+const DEMO_QUERY = "What was Q4 revenue?" as const;
 
 const STAGGER_DELAY = 0.1;
 const ROW_ANIMATION_DURATION = 0.3;
 
 export function Step5Comparison() {
-  const withoutRagResponse = getWithoutRagFinalResponse();
-  const withRagResponse = getWithRagFinalResponse();
+  const llmResponse = getPlainLlmFinalResponse(DEMO_QUERY);
+  const agentResponse = getAgentFinalResponse(DEMO_QUERY);
 
   return (
     <div className="flex flex-col gap-6">
       {/* Side-by-side responses */}
       <ComparisonView
-        leftLabel="Without RAG"
-        rightLabel="With RAG"
+        leftLabel="Plain LLM"
+        rightLabel="AI Agent"
         leftContent={
           <div className="space-y-3">
             <p className="text-xs font-medium text-muted-foreground">
-              Query: "{RAG_DEMO_QUERY}"
+              Query: "{DEMO_QUERY}"
             </p>
             <div className="rounded-lg bg-red-50 p-4 text-sm leading-relaxed text-red-900 border border-red-200">
-              {withoutRagResponse}
+              {llmResponse}
             </div>
             <div className="flex items-center gap-2 text-sm text-red-600">
               <X className="h-4 w-4" />
-              <span>Hallucinated details, no sources, inaccurate</span>
+              <span>No data access, generic response</span>
             </div>
           </div>
         }
         rightContent={
           <div className="space-y-3">
             <p className="text-xs font-medium text-muted-foreground">
-              Query: "{RAG_DEMO_QUERY}"
+              Query: "{DEMO_QUERY}"
             </p>
             <div className="rounded-lg bg-green-50 p-4 text-sm leading-relaxed text-green-900 border border-green-200 whitespace-pre-line">
-              {withRagResponse}
+              {agentResponse}
             </div>
             <div className="flex items-center gap-2 text-sm text-green-600">
               <Check className="h-4 w-4" />
-              <span>Accurate, cited sources, verifiable</span>
+              <span>Real data, specific insights, actionable</span>
             </div>
           </div>
         }
@@ -65,15 +66,15 @@ export function Step5Comparison() {
                 Feature
               </th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-red-700">
-                Without RAG
+                Plain LLM
               </th>
               <th className="px-4 py-3 text-left text-sm font-semibold text-green-700">
-                With RAG
+                AI Agent
               </th>
             </tr>
           </thead>
           <tbody>
-            {RAG_COMPARISON_TABLE.map((row, index) => (
+            {COMPARISON_TABLE.map((row, index) => (
               <motion.tr
                 key={row.feature}
                 initial={{ opacity: 0, x: -10 }}
@@ -88,10 +89,10 @@ export function Step5Comparison() {
                   {row.feature}
                 </td>
                 <td className="px-4 py-3 text-sm text-muted-foreground">
-                  {row.withoutRag}
+                  {row.llm}
                 </td>
                 <td className="px-4 py-3 text-sm text-muted-foreground">
-                  {row.withRag}
+                  {row.agent}
                 </td>
               </motion.tr>
             ))}

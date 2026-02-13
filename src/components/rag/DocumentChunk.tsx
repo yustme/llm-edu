@@ -66,10 +66,10 @@ export function DocumentChunk({
 
       {/* Source */}
       <div className="flex items-center gap-1.5">
-        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Source:
         </span>
-        <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+        <span className="rounded bg-muted px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
           {source}
         </span>
       </div>
@@ -77,7 +77,7 @@ export function DocumentChunk({
       {/* Relevance score bar */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Relevance
           </span>
           <span className={cn("text-xs font-semibold", scoreColor)}>

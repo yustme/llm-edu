@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,8 @@ interface ToolCallCardProps {
   input: Record<string, unknown>;
   output: Record<string, unknown>;
   status: ToolCallStatus;
+  /** When true, auto-expand while running and collapse when complete */
+  autoExpand?: boolean;
   className?: string;
 }
 
@@ -36,10 +38,17 @@ export function ToolCallCard({
   input,
   output,
   status,
+  autoExpand = false,
   className,
 }: ToolCallCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const statusInfo = STATUS_CONFIG[status];
+
+  useEffect(() => {
+    if (!autoExpand) return;
+    if (status === "running") setIsExpanded(true);
+    else if (status === "complete") setIsExpanded(false);
+  }, [autoExpand, status]);
 
   return (
     <div

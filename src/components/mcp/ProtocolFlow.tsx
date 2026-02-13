@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Monitor, Server, ArrowRight, ArrowLeft } from "lucide-react";
+import { useFullscreenStepper } from "@/hooks/useFullscreenStepper";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/presentation/CodeBlock";
 import { PROTOCOL_MESSAGES, type ProtocolMessage } from "@/data/mock-mcp-flows";
@@ -27,6 +28,14 @@ export function ProtocolFlow({ className }: ProtocolFlowProps) {
   const isComplete = currentIndex >= PROTOCOL_MESSAGES.length - 1;
   const currentMessage: ProtocolMessage | null =
     currentIndex >= 0 ? PROTOCOL_MESSAGES[currentIndex] : null;
+
+  /** Stepper: index 0 = empty (-1), indices 1..N = messages 0..N-1 */
+  const stepperIndex = currentIndex + 1;
+  const setStepperPosition = useCallback(
+    (i: number) => setCurrentIndex(i - 1),
+    [],
+  );
+  useFullscreenStepper(stepperIndex, PROTOCOL_MESSAGES.length + 1, setStepperPosition);
 
   /** Advance to the next message */
   const nextMessage = useCallback(() => {
@@ -74,14 +83,14 @@ export function ProtocolFlow({ className }: ProtocolFlowProps) {
         <div className="flex w-32 flex-col items-center gap-2 rounded-lg border-2 border-indigo-300 bg-indigo-50 p-3">
           <Monitor className="h-6 w-6 text-indigo-600" />
           <span className="text-xs font-semibold text-indigo-700">Client</span>
-          <span className="text-[9px] text-indigo-500">Claude Desktop</span>
+          <span className="text-[11px] text-indigo-500">Claude Desktop</span>
         </div>
 
         {/* Middle: message animation area */}
         <div className="flex flex-1 flex-col items-center gap-2 pt-2">
           {/* Direction indicator */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               MCP Protocol / JSON-RPC 2.0
             </span>
           </div>
@@ -107,7 +116,7 @@ export function ProtocolFlow({ className }: ProtocolFlowProps) {
                 <div className="mb-1 flex items-center justify-center gap-2">
                   {currentMessage.direction === "request" ? (
                     <>
-                      <span className="text-[10px] font-medium text-indigo-600">
+                      <span className="text-xs font-medium text-indigo-600">
                         {currentMessage.label}
                       </span>
                       <ArrowRight className="h-3 w-3 text-indigo-500" />
@@ -115,7 +124,7 @@ export function ProtocolFlow({ className }: ProtocolFlowProps) {
                   ) : (
                     <>
                       <ArrowLeft className="h-3 w-3 text-emerald-500" />
-                      <span className="text-[10px] font-medium text-emerald-600">
+                      <span className="text-xs font-medium text-emerald-600">
                         {currentMessage.label}
                       </span>
                     </>
@@ -123,7 +132,7 @@ export function ProtocolFlow({ className }: ProtocolFlowProps) {
                 </div>
 
                 {/* Description */}
-                <p className="mb-1.5 text-center text-[10px] text-muted-foreground">
+                <p className="mb-1.5 text-center text-xs text-muted-foreground">
                   {currentMessage.description}
                 </p>
 
@@ -136,7 +145,7 @@ export function ProtocolFlow({ className }: ProtocolFlowProps) {
                       ? "Request"
                       : "Response"
                   }
-                  className="max-h-48 overflow-auto text-[11px]"
+                  className="text-xs"
                 />
               </motion.div>
             )}
@@ -156,7 +165,7 @@ export function ProtocolFlow({ className }: ProtocolFlowProps) {
         <div className="flex w-32 flex-col items-center gap-2 rounded-lg border-2 border-blue-300 bg-blue-50 p-3">
           <Server className="h-6 w-6 text-blue-600" />
           <span className="text-xs font-semibold text-blue-700">Server</span>
-          <span className="text-[9px] text-blue-500">Database MCP</span>
+          <span className="text-[11px] text-blue-500">Database MCP</span>
         </div>
       </div>
 

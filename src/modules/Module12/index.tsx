@@ -6,27 +6,28 @@ import { StepProgress } from "@/components/layout/StepProgress";
 import { StepControls } from "@/components/layout/StepControls";
 import { SlideContainer } from "@/components/presentation/SlideContainer";
 import { Step1Intro } from "./steps/Step1Intro";
-import { Step2Dimensions } from "./steps/Step2Dimensions";
-import { Step3Architecture } from "./steps/Step3Architecture";
-import { Step4QualityCheckDemo } from "./steps/Step4QualityCheckDemo";
-import { Step5RemediationDemo } from "./steps/Step5RemediationDemo";
+import { Step2Architecture } from "./steps/Step2Architecture";
+import { Step3WithoutRAG } from "./steps/Step3WithoutRAG";
+import { Step4WithRAG } from "./steps/Step4WithRAG";
+import { Step5Comparison } from "./steps/Step5Comparison";
 import { Step6Summary } from "./steps/Step6Summary";
 import { STEP_TITLES } from "./data";
 
 const MODULE_ID = 12;
 
+/** Map step number (1-indexed) to its component */
 function StepContent({ step }: { step: number }) {
   switch (step) {
     case 1:
       return <Step1Intro />;
     case 2:
-      return <Step2Dimensions />;
+      return <Step2Architecture />;
     case 3:
-      return <Step3Architecture />;
+      return <Step3WithoutRAG />;
     case 4:
-      return <Step4QualityCheckDemo />;
+      return <Step4WithRAG />;
     case 5:
-      return <Step5RemediationDemo />;
+      return <Step5Comparison />;
     case 6:
       return <Step6Summary />;
     default:
@@ -52,6 +53,7 @@ export default function Module12() {
 
   return (
     <div className="flex h-screen flex-col">
+      {/* Header */}
       <header className="flex items-center justify-between border-b border-border px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10">
@@ -68,9 +70,13 @@ export default function Module12() {
         </div>
         <StepControls />
       </header>
+
+      {/* Step progress bar */}
       <div className="px-6 py-3 border-b border-border">
         <StepProgress />
       </div>
+
+      {/* Step content with slide animations */}
       <div className="flex-1 overflow-auto p-8">
         <SlideContainer
           animationKey={`module12-step-${currentStep}`}

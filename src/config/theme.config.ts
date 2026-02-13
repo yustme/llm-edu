@@ -56,3 +56,7 @@ export const LAYOUT = {
   /** Minimum content area width before sidebar auto-collapses */
   contentMinWidthPx: 700,
 } as const;
+
+/** Font scale levels cycled by +/- keys */
+export const FONT_SCALE_LEVELS = [80, 90, 100, 110, 120, 130, 140, 150, 160] as const;
+export type FontScaleLevel = (typeof FONT_SCALE_LEVELS)[number];

@@ -7,12 +7,15 @@ import { MODULES } from "@/config/app.config";
 /**
  * Keyboard shortcuts for presentation navigation.
  *
- * Left Arrow  -> previous step (within module)
- * Right Arrow -> next step (within module)
- * Space       -> toggle play/pause simulation
- * Escape      -> reset simulation
- * 1-9         -> jump to module (navigate to /module/1 through /module/9)
- * 0 or Home   -> go to home page (navigate to /)
+ * Left Arrow  -> normal: previous step | fullscreen: prev sim step or prev query
+ * Right Arrow -> normal: next step     | fullscreen: next sim step or next query
+ * B          -> toggle fullscreen on interactive area
+ * +/=        -> increase font size
+ * -          -> decrease font size
+ * Space      -> toggle play/pause simulation
+ * Escape     -> exit fullscreen (or reset simulation)
+ * 1-9        -> jump to module (navigate to /module/1 through /module/9)
+ * 0 or Home  -> go to home page (navigate to /)
  *
  * Keys are ignored when an input or textarea is focused.
  */
@@ -27,22 +30,112 @@ export function useKeyboardNavigation(): void {
         return;
       }
 
-      const { currentModuleId, nextStep, prevStep, currentStep, totalSteps } =
-        usePresentationStore.getState();
+      const presentation = usePresentationStore.getState();
       const simulation = useSimulationStore.getState();
 
       switch (event.key) {
         case "ArrowLeft": {
-          if (currentModuleId !== null && currentStep > 1) {
-            prevStep();
+          if (presentation.currentModuleId === null) break;
+          if (presentation.isFullscreen) {
+            const hasSim = simulation.steps.length > 0;
+            const simAtStart = simulation.currentStepIndex <= 0;
+
+            // 1. Try going back in simulation
+            if (hasSim && !simAtStart) {
+              simulation.prevStep();
+              usePresentationStore.setState({ fullscreenBoundaryReached: false });
+              break;
+            }
+
+            // 2. Try going back in registered stepper
+            const stepper = presentation.fullscreenStepper;
+            if (stepper?.prev()) {
+              usePresentationStore.setState({ fullscreenBoundaryReached: false });
+              break;
+            }
+
+            // 3. Try prev query
+            const movedQuery = presentation.queryCount > 1 && presentation.prevQuery();
+            if (movedQuery) {
+              simulation.reset();
+              usePresentationStore.setState({ fullscreenBoundaryReached: false });
+              break;
+            }
+
+            // 4. Boundary logic: double-press to exit fullscreen
+            if (presentation.fullscreenBoundaryReached) {
+              presentation.setFullscreen(false);
+              if (presentation.currentStep > 1) {
+                presentation.prevStep();
+              }
+            } else {
+              usePresentationStore.setState({ fullscreenBoundaryReached: true });
+            }
+          } else if (presentation.currentStep > 1) {
+            presentation.prevStep();
           }
           break;
         }
 
         case "ArrowRight": {
-          if (currentModuleId !== null && currentStep < totalSteps) {
-            nextStep();
+          if (presentation.currentModuleId === null) break;
+          if (presentation.isFullscreen) {
+            const hasSim = simulation.steps.length > 0;
+            const simAtEnd = simulation.currentStepIndex >= simulation.steps.length - 1;
+
+            // 1. Try advancing simulation
+            if (hasSim && !simAtEnd) {
+              simulation.nextStep();
+              usePresentationStore.setState({ fullscreenBoundaryReached: false });
+              break;
+            }
+
+            // 2. Try advancing registered stepper
+            const stepper = presentation.fullscreenStepper;
+            if (stepper?.next()) {
+              usePresentationStore.setState({ fullscreenBoundaryReached: false });
+              break;
+            }
+
+            // 3. Try next query
+            const movedQuery = presentation.queryCount > 1 && presentation.nextQuery();
+            if (movedQuery) {
+              simulation.reset();
+              usePresentationStore.setState({ fullscreenBoundaryReached: false });
+              break;
+            }
+
+            // 4. Boundary logic: double-press to exit fullscreen
+            if (presentation.fullscreenBoundaryReached) {
+              presentation.setFullscreen(false);
+              if (presentation.currentStep < presentation.totalSteps) {
+                presentation.nextStep();
+              }
+            } else {
+              usePresentationStore.setState({ fullscreenBoundaryReached: true });
+            }
+          } else if (presentation.currentStep < presentation.totalSteps) {
+            presentation.nextStep();
           }
+          break;
+        }
+
+        case "b":
+        case "B": {
+          if (presentation.currentModuleId !== null) {
+            presentation.toggleFullscreen();
+          }
+          break;
+        }
+
+        case "+":
+        case "=": {
+          presentation.increaseFontScale();
+          break;
+        }
+
+        case "-": {
+          presentation.decreaseFontScale();
           break;
         }
 
@@ -58,7 +151,11 @@ export function useKeyboardNavigation(): void {
         }
 
         case "Escape": {
-          simulation.reset();
+          if (presentation.isFullscreen) {
+            presentation.setFullscreen(false);
+          } else {
+            simulation.reset();
+          }
           break;
         }
 

@@ -1,6 +1,6 @@
 import { lazy, Suspense, Component } from "react";
 import type { ReactNode, ErrorInfo } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router";
+import { HashRouter, Routes, Route, Link } from "react-router";
 import { motion } from "framer-motion";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/AppShell";
@@ -29,6 +29,19 @@ const Module10 = lazy(() => import("@/modules/Module10/index"));
 const Module11 = lazy(() => import("@/modules/Module11/index"));
 const Module12 = lazy(() => import("@/modules/Module12/index"));
 const Module13 = lazy(() => import("@/modules/Module13/index"));
+const Module14 = lazy(() => import("@/modules/Module14/index"));
+const Module15 = lazy(() => import("@/modules/Module15/index"));
+const Module16 = lazy(() => import("@/modules/Module16/index"));
+const Module17 = lazy(() => import("@/modules/Module17/index"));
+const Module18 = lazy(() => import("@/modules/Module18/index"));
+const Module19 = lazy(() => import("@/modules/Module19/index"));
+const Module20 = lazy(() => import("@/modules/Module20/index"));
+const Module21 = lazy(() => import("@/modules/Module21/index"));
+const Module22 = lazy(() => import("@/modules/Module22/index"));
+const Module23 = lazy(() => import("@/modules/Module23/index"));
+const Module24 = lazy(() => import("@/modules/Module24/index"));
+const Module25 = lazy(() => import("@/modules/Module25/index"));
+const Module26 = lazy(() => import("@/modules/Module26/index"));
 
 /* ------------------------------------------------------------------ */
 /*  Loading fallback with animated spinner                             */
@@ -132,7 +145,7 @@ function KeyboardNavigationProvider({
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <TooltipProvider>
         <KeyboardNavigationProvider>
           <ErrorBoundary>
@@ -153,12 +166,25 @@ export default function App() {
                   <Route path="module/11" element={<Module11 />} />
                   <Route path="module/12" element={<Module12 />} />
                   <Route path="module/13" element={<Module13 />} />
+                  <Route path="module/14" element={<Module14 />} />
+                  <Route path="module/15" element={<Module15 />} />
+                  <Route path="module/16" element={<Module16 />} />
+                  <Route path="module/17" element={<Module17 />} />
+                  <Route path="module/18" element={<Module18 />} />
+                  <Route path="module/19" element={<Module19 />} />
+                  <Route path="module/20" element={<Module20 />} />
+                  <Route path="module/21" element={<Module21 />} />
+                  <Route path="module/22" element={<Module22 />} />
+                  <Route path="module/23" element={<Module23 />} />
+                  <Route path="module/24" element={<Module24 />} />
+                  <Route path="module/25" element={<Module25 />} />
+                  <Route path="module/26" element={<Module26 />} />
                 </Route>
               </Routes>
             </Suspense>
           </ErrorBoundary>
         </KeyboardNavigationProvider>
       </TooltipProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

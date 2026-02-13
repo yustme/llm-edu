@@ -83,7 +83,7 @@ function AgentNodeComponent({ data }: NodeProps<AgentNodeType>) {
       {/* Status badge */}
       <div
         className={cn(
-          "rounded-full px-2 py-0.5 text-[10px] font-medium transition-colors",
+          "rounded-full px-2 py-0.5 text-xs font-medium transition-colors",
           statusInfo.bg,
           statusInfo.text,
         )}

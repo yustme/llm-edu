@@ -1,119 +1,157 @@
 import { motion } from "framer-motion";
-import { Check, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 import { InfoPanel } from "@/components/presentation/InfoPanel";
 import { InteractiveArea } from "@/components/presentation/InteractiveArea";
-import { OPTIMIZATION_CHECKLIST } from "../data";
+import { DISTANCE_METRICS } from "@/data/mock-similarity";
 
 const STAGGER_DELAY = 0.1;
 const ANIMATION_DURATION = 0.4;
 
-const WORKFLOW_STEPS = [
-  { label: "Measure", description: "Establish baseline metrics" },
-  { label: "Identify", description: "Find the biggest bottleneck" },
-  { label: "Optimize", description: "Apply targeted technique" },
-  { label: "Validate", description: "Measure improvement" },
+const BEST_PRACTICES = [
+  {
+    id: "normalize",
+    label: "Normalize embeddings before comparison",
+    description:
+      "Pre-normalize vectors so cosine similarity becomes a simple dot product, significantly faster at scale.",
+  },
+  {
+    id: "right-model",
+    label: "Choose the right embedding model",
+    description:
+      "Use task-specific models (e.g., text-embedding-3-small for search, all-MiniLM-L6 for speed). Benchmark on your data.",
+  },
+  {
+    id: "threshold-eval",
+    label: "Evaluate thresholds on real queries",
+    description:
+      "Do not guess thresholds. Run evaluation with labeled query-document pairs to find the optimal cutoff.",
+  },
+  {
+    id: "vector-db",
+    label: "Use a vector database for scale",
+    description:
+      "For millions of vectors, use Pinecone, Weaviate, or pgvector with approximate nearest neighbor (ANN) indexing.",
+  },
+  {
+    id: "hybrid-search",
+    label: "Combine with keyword search (hybrid)",
+    description:
+      "Use BM25 + cosine similarity together for the best of both worlds. Many vector DBs support hybrid search natively.",
+  },
 ] as const;
+
+/** Table header labels for the metrics comparison */
+const TABLE_HEADERS = ["Metric", "Range", "Best For", "Scale Invariant"] as const;
 
 export function Step6Summary() {
   return (
     <div className="flex gap-8">
-      {/* Left: Info panel (~40%) */}
       <div className="w-2/5 shrink-0">
         <InfoPanel
-          title="Optimization Decision Framework"
-          highlights={["Measure First", "Targeted Changes", "Iterate"]}
+          title="Key Takeaways"
+          highlights={["Cosine", "Threshold", "Hybrid"]}
         >
           <p>
-            Optimization is an iterative process. The key principle is:{" "}
-            <strong>measure, identify, optimize, validate</strong>.
+            <strong>Cosine similarity</strong> is the standard metric for
+            comparing text embeddings. It measures the angle between vectors,
+            ignoring magnitude.
           </p>
-          <p>Key takeaways:</p>
+          <p>Key principles:</p>
           <ul className="list-disc space-y-1 pl-5">
             <li>
-              Always <strong>measure baseline</strong> cost and latency before
-              making changes
+              <strong>Range [-1, 1]</strong> where 1 = identical, 0 =
+              unrelated, -1 = opposite
             </li>
             <li>
-              <strong>Model routing</strong> gives the biggest cost reduction
-              by using cheaper models for simple tasks
+              <strong>Scale-invariant</strong> - document length does not
+              affect the score
             </li>
             <li>
-              <strong>Caching</strong> eliminates redundant calls entirely -
-              the fastest/cheapest call is the one you never make
+              <strong>Threshold matters</strong> - tune it for your precision /
+              recall needs
             </li>
             <li>
-              <strong>Parallel tool calls</strong> reduce latency when multiple
-              independent tools are needed
-            </li>
-            <li>
-              <strong>Prompt optimization</strong> reduces token count, which
-              impacts both cost and latency
+              <strong>Hybrid search</strong> combines the best of keyword and
+              semantic approaches
             </li>
           </ul>
           <p>
-            Start with the highest-impact optimization for your specific
-            bottleneck, then iterate.
+            Combined with <strong>RAG</strong> (Module 5) and{" "}
+            <strong>Embeddings</strong>, cosine similarity powers most modern
+            AI search and retrieval systems.
           </p>
         </InfoPanel>
       </div>
 
-      {/* Right: Interactive area (~60%) */}
       <div className="flex-1">
         <InteractiveArea className="space-y-6">
-          {/* Optimization workflow */}
+          {/* Distance metrics comparison table */}
           <div>
             <p className="mb-3 text-center text-sm font-medium text-muted-foreground">
-              Optimization Workflow
+              Distance Metrics Comparison
             </p>
-            <div className="flex items-center justify-center gap-2">
-              {WORKFLOW_STEPS.map((step, index) => (
-                <div key={step.label} className="flex items-center gap-2">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      delay: 0.2 + index * 0.2,
-                      duration: ANIMATION_DURATION,
-                    }}
-                    className="flex flex-col items-center gap-1"
+            <div className="overflow-hidden rounded-lg border">
+              {/* Header */}
+              <div className="grid grid-cols-4 gap-px bg-muted">
+                {TABLE_HEADERS.map((header) => (
+                  <div
+                    key={header}
+                    className="bg-muted px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary text-sm font-bold">
-                      {index + 1}
-                    </div>
-                    <span className="text-xs font-semibold text-foreground">
-                      {step.label}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground text-center max-w-20">
-                      {step.description}
-                    </span>
-                  </motion.div>
-                  {index < WORKFLOW_STEPS.length - 1 && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.3 + index * 0.2, duration: 0.3 }}
-                    >
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    </motion.div>
-                  )}
-                </div>
+                    {header}
+                  </div>
+                ))}
+              </div>
+              {/* Rows */}
+              {DISTANCE_METRICS.map((metric, index) => (
+                <motion.div
+                  key={metric.name}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: 0.2 + index * STAGGER_DELAY,
+                    duration: ANIMATION_DURATION,
+                  }}
+                  className="grid grid-cols-4 gap-px border-t"
+                >
+                  <div className="bg-card px-3 py-2.5 text-sm font-medium text-foreground">
+                    {metric.name}
+                  </div>
+                  <div className="bg-card px-3 py-2.5 text-xs font-mono text-muted-foreground">
+                    {metric.range}
+                  </div>
+                  <div className="bg-card px-3 py-2.5 text-xs text-muted-foreground">
+                    {metric.bestFor}
+                  </div>
+                  <div className="bg-card px-3 py-2.5 text-xs">
+                    {metric.scaleInvariant ? (
+                      <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700 font-medium">
+                        Yes
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-red-100 px-2 py-0.5 text-red-700 font-medium">
+                        No
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          {/* Optimization checklist */}
+          {/* Best practices */}
           <div>
             <p className="mb-3 text-center text-sm font-medium text-muted-foreground">
-              Optimization Checklist
+              Best Practices
             </p>
             <div className="space-y-2">
-              {OPTIMIZATION_CHECKLIST.map((item, index) => (
+              {BEST_PRACTICES.map((item, index) => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
-                    delay: 1.0 + index * STAGGER_DELAY,
+                    delay: 0.5 + index * STAGGER_DELAY,
                     duration: ANIMATION_DURATION,
                   }}
                   className="flex items-start gap-3 rounded-lg border bg-card p-3"

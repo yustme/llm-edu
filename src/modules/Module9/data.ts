@@ -1,49 +1,61 @@
 /** Step titles for the module navigation header */
 export const STEP_TITLES = [
-  "Introduction to Evaluation",
-  "Key Metrics",
-  "Test Cases",
-  "LLM-as-Judge",
-  "Evaluation Run",
+  "Introduction",
+  "Meet the Agents",
+  "Workflow Overview",
+  "Step-by-Step Animation",
+  "Message Detail",
   "Summary",
 ] as const;
 
 /** Step descriptions shown in the step progress area */
 export const STEP_DESCRIPTIONS = [
-  "Why evaluating AI agents is critical",
-  "Accuracy, latency, cost, tool correctness, completion rate",
-  "Unit, integration, and end-to-end test types",
-  "Using an LLM to evaluate another LLM's output",
-  "Running a batch evaluation with animated results",
-  "Testing strategy and deployment workflow",
+  "Why do we need multiple agents?",
+  "Meet the three specialized agents",
+  "How agents collaborate on a task",
+  "Watch agents solve a task step by step",
+  "Browse individual agent messages",
+  "Key takeaways and architecture recap",
 ] as const;
 
-/** Best practice for evaluation strategy */
-export interface EvalBestPractice {
-  title: string;
-  description: string;
-}
+/** Key benefits of multi-agent architecture */
+export const MULTI_AGENT_BENEFITS = [
+  {
+    title: "Specialization",
+    description:
+      "Each agent focuses on what it does best - analysis, data engineering, or reporting.",
+  },
+  {
+    title: "Scalability",
+    description:
+      "Add new agents without modifying existing ones. Each agent is independent.",
+  },
+  {
+    title: "Parallel Processing",
+    description:
+      "Independent tasks can run simultaneously across different agents.",
+  },
+  {
+    title: "Separation of Concerns",
+    description:
+      "Clear boundaries between responsibilities reduce complexity and errors.",
+  },
+] as const;
 
-/** Best practices for AI agent evaluation */
-export const EVAL_BEST_PRACTICES: EvalBestPractice[] = [
-  {
-    title: "Automate regression tests",
-    description:
-      "Run your evaluation suite on every pull request. Catch quality regressions before they reach production by comparing metrics against baseline thresholds.",
-  },
-  {
-    title: "Use LLM-as-Judge for subjective criteria",
-    description:
-      "Human evaluation does not scale. Use a strong LLM to score outputs on criteria like helpfulness, accuracy, and formatting with a structured rubric.",
-  },
-  {
-    title: "Track metrics over time",
-    description:
-      "Store evaluation results in a dashboard. Monitor trends in accuracy, latency, and cost across model versions so you can spot degradation early.",
-  },
-  {
-    title: "Test at every layer",
-    description:
-      "Combine unit tests for individual tools, integration tests for tool chains, and end-to-end tests for full workflows to cover all failure modes.",
-  },
-];
+/** Pros and cons for the summary step */
+export const PROS_AND_CONS = {
+  pros: [
+    "Each agent is an expert in its domain",
+    "Easy to add, remove, or swap agents",
+    "Complex tasks are broken into manageable parts",
+    "Agents can be developed and tested independently",
+    "Natural fault isolation between components",
+  ],
+  cons: [
+    "Increased communication overhead between agents",
+    "More complex orchestration and error handling",
+    "Potential latency from multi-hop message passing",
+    "Requires clear interface definitions between agents",
+    "Debugging distributed workflows is more difficult",
+  ],
+} as const;

@@ -1,114 +1,171 @@
 import { motion } from "framer-motion";
-import { HelpCircle } from "lucide-react";
+import { X, Check } from "lucide-react";
 import { InfoPanel } from "@/components/presentation/InfoPanel";
 import { InteractiveArea } from "@/components/presentation/InteractiveArea";
-import { INCONSISTENCY_EXPLANATION } from "../data";
-import { formatCurrency } from "@/lib/formatters";
-import {
-  REVENUE_RUN1,
-  REVENUE_RUN2,
-  REVENUE_RUN3,
-} from "@/data/sample-dataset";
+import { ComparisonView } from "@/components/presentation/ComparisonView";
+import { USE_CASES } from "@/data/mock-structured-output";
 
-const ANIMATION_DURATION = 0.5;
-const STAGGER_BASE_DELAY = 0.8;
-const STAGGER_INTERVAL = 0.7;
+const STAGGER_DELAY = 0.15;
+const ANIMATION_DURATION = 0.4;
 
-/** Colors for the 3 inconsistent results */
-const RESULT_STYLES = [
-  { bg: "bg-red-100", border: "border-red-300", text: "text-red-700" },
-  { bg: "bg-amber-100", border: "border-amber-300", text: "text-amber-700" },
-  { bg: "bg-orange-100", border: "border-orange-300", text: "text-orange-700" },
+const FREE_TEXT_PROBLEMS = [
+  "Unpredictable format - different every time",
+  "Cannot be reliably parsed by code",
+  "Requires complex regex or heuristics",
+  "Breaks downstream pipelines silently",
 ] as const;
 
-const RESULTS = [
-  { value: REVENUE_RUN1, label: "Agent 1" },
-  { value: REVENUE_RUN2, label: "Agent 2" },
-  { value: REVENUE_RUN3, label: "Agent 3" },
+const STRUCTURED_BENEFITS = [
+  "Consistent, machine-readable JSON",
+  "Validated against a schema",
+  "Parseable with standard tools",
+  "Reliable integration with any system",
 ] as const;
 
 export function Step1Intro() {
   return (
     <div className="flex gap-8">
-      {/* Left: Info panel (~40%) */}
       <div className="w-2/5 shrink-0">
         <InfoPanel
-          title="The Consistency Problem"
-          highlights={["Same Question", "Different Answers", "Why?"]}
+          title="Why Structured Output?"
+          highlights={["JSON Schema", "Validation", "Reliability"]}
         >
           <p>
-            Ask the same question to 3 different agents (or the same agent 3
-            times), and you may get 3 different answers. Why?
+            By default, LLMs produce <strong>free-form text</strong>. This is
+            great for conversation but terrible for automation. When you need to
+            extract data, call APIs, or feed results into a pipeline, you need{" "}
+            <strong>structured output</strong>.
           </p>
-          <p>{INCONSISTENCY_EXPLANATION.intro}</p>
+          <p>
+            Structured output means the LLM returns data in a{" "}
+            <strong>predefined format</strong> (usually JSON) that matches a
+            schema. This makes the output:
+          </p>
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              <strong>Parseable</strong> - standard JSON parsing, no regex needed
+            </li>
+            <li>
+              <strong>Validated</strong> - check against a schema for correctness
+            </li>
+            <li>
+              <strong>Consistent</strong> - same shape every time, reliable
+              integration
+            </li>
+            <li>
+              <strong>Type-safe</strong> - correct data types for every field
+            </li>
+          </ul>
+          <p>
+            This is essential for building <strong>production-grade</strong> AI
+            applications that other systems can depend on.
+          </p>
         </InfoPanel>
       </div>
 
-      {/* Right: Interactive area (~60%) */}
       <div className="flex-1">
-        <InteractiveArea className="flex h-full flex-col items-center justify-center gap-8">
-          {/* The question */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: ANIMATION_DURATION }}
-            className="flex items-center gap-3 rounded-xl border-2 border-blue-200 bg-blue-50 px-6 py-4"
-          >
-            <HelpCircle className="h-6 w-6 text-blue-500 shrink-0" />
-            <span className="text-lg font-semibold text-blue-800">
-              &ldquo;What is total revenue?&rdquo;
-            </span>
-          </motion.div>
+        <InteractiveArea className="space-y-6">
+          {/* Comparison: free text vs structured */}
+          <ComparisonView
+            leftLabel="Free Text Output"
+            rightLabel="Structured Output"
+            leftContent={
+              <div className="space-y-2.5 text-sm">
+                {FREE_TEXT_PROBLEMS.map((item, index) => (
+                  <motion.div
+                    key={item}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: index * STAGGER_DELAY,
+                      duration: ANIMATION_DURATION,
+                    }}
+                    className="flex items-start gap-2"
+                  >
+                    <X className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+                    <span>{item}</span>
+                  </motion.div>
+                ))}
 
-          {/* Arrow */}
-          <motion.div
-            initial={{ opacity: 0, scaleY: 0 }}
-            animate={{ opacity: 1, scaleY: 1 }}
-            transition={{ delay: 0.5, duration: 0.3 }}
-            className="h-8 w-px bg-border origin-top"
+                {/* Example free text */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: ANIMATION_DURATION }}
+                  className="mt-3 rounded border bg-muted/50 p-2 font-mono text-xs text-muted-foreground"
+                >
+                  The customer Alice Johnson can be reached at alice@example.com
+                  or by phone at +1-555-0142. She works as an Engineering Manager
+                  at Acme Corp.
+                </motion.div>
+              </div>
+            }
+            rightContent={
+              <div className="space-y-2.5 text-sm">
+                {STRUCTURED_BENEFITS.map((item, index) => (
+                  <motion.div
+                    key={item}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: index * STAGGER_DELAY,
+                      duration: ANIMATION_DURATION,
+                    }}
+                    className="flex items-start gap-2"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />
+                    <span>{item}</span>
+                  </motion.div>
+                ))}
+
+                {/* Example structured output */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: ANIMATION_DURATION }}
+                  className="mt-3 rounded border bg-muted/50 p-2 font-mono text-xs text-muted-foreground"
+                >
+                  {`{ "name": "Alice Johnson",`}
+                  <br />
+                  {`  "email": "alice@example.com",`}
+                  <br />
+                  {`  "phone": "+1-555-0142",`}
+                  <br />
+                  {`  "company": "Acme Corp",`}
+                  <br />
+                  {`  "role": "Engineering Manager" }`}
+                </motion.div>
+              </div>
+            }
           />
 
-          {/* 3 different results appearing one after another */}
-          <div className="flex flex-col gap-3 w-full max-w-sm">
-            {RESULTS.map((result, index) => (
-              <motion.div
-                key={result.label}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  delay: STAGGER_BASE_DELAY + index * STAGGER_INTERVAL,
-                  duration: ANIMATION_DURATION,
-                }}
-                className={`flex items-center justify-between rounded-lg border px-5 py-3 ${RESULT_STYLES[index].bg} ${RESULT_STYLES[index].border}`}
-              >
-                <span
-                  className={`text-sm font-medium ${RESULT_STYLES[index].text}`}
-                >
-                  {result.label}:
-                </span>
-                <span
-                  className={`text-xl font-bold ${RESULT_STYLES[index].text}`}
-                >
-                  {formatCurrency(result.value)}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Inconsistency callout */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              delay: STAGGER_BASE_DELAY + 3 * STAGGER_INTERVAL,
-              duration: 0.6,
-            }}
-            className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-center"
-          >
-            <p className="text-sm font-semibold text-red-700">
-              3 agents, 3 different answers for the same question
+          {/* Use cases */}
+          <div>
+            <p className="mb-3 text-center text-sm font-medium text-muted-foreground">
+              Real-World Use Cases
             </p>
-          </motion.div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {USE_CASES.map((useCase, index) => (
+                <motion.div
+                  key={useCase.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    delay: 1.0 + index * 0.1,
+                    duration: ANIMATION_DURATION,
+                  }}
+                  className="rounded-lg border bg-card px-3 py-2 text-center"
+                >
+                  <p className="text-xs font-medium text-foreground">
+                    {useCase.label}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground max-w-[140px]">
+                    {useCase.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </InteractiveArea>
       </div>
     </div>

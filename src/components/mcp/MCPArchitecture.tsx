@@ -73,17 +73,17 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         data: {
           label: (
             <div className="flex flex-col items-center gap-1">
-              <Monitor className="h-5 w-5 text-slate-600" />
-              <span className="text-xs font-semibold">Claude Desktop</span>
-              <span className="text-[10px] text-muted-foreground">
+              <Monitor className="h-6 w-6 text-slate-600" />
+              <span className="text-sm font-semibold">Claude Desktop</span>
+              <span className="text-xs text-muted-foreground">
                 Host Application
               </span>
             </div>
           ),
         },
         style: {
-          width: 280,
-          height: 90,
+          width: 320,
+          height: 100,
           background: "#f8fafc",
           border: "2px solid #94a3b8",
           borderRadius: "12px",
@@ -97,10 +97,10 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         data: {
           label: (
             <div className="flex flex-col items-center gap-0.5">
-              <span className="text-[10px] font-semibold text-indigo-700">
+              <span className="text-xs font-semibold text-indigo-700">
                 MCP Client
               </span>
-              <span className="text-[9px] text-muted-foreground">
+              <span className="text-[11px] text-muted-foreground">
                 Protocol Handler
               </span>
             </div>
@@ -109,8 +109,8 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         parentId: "host-app",
         extent: "parent" as const,
         style: {
-          width: 200,
-          height: 40,
+          width: 230,
+          height: 44,
           background: "#eef2ff",
           border: "1px solid #a5b4fc",
           borderRadius: "8px",
@@ -163,8 +163,8 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         data: {
           label: (
             <div className="flex items-center gap-1.5">
-              <Database className="h-3.5 w-3.5 text-blue-600" />
-              <span className="text-[10px] font-medium">PostgreSQL</span>
+              <Database className="h-4 w-4 text-blue-600" />
+              <span className="text-xs font-medium">PostgreSQL</span>
             </div>
           ),
         },
@@ -172,8 +172,8 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
           background: "#eff6ff",
           border: "1px solid #bfdbfe",
           borderRadius: "8px",
-          width: 140,
-          height: 36,
+          width: 150,
+          height: 40,
         },
       },
       {
@@ -183,8 +183,8 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         data: {
           label: (
             <div className="flex items-center gap-1.5">
-              <Globe className="h-3.5 w-3.5 text-green-600" />
-              <span className="text-[10px] font-medium">REST API</span>
+              <Globe className="h-4 w-4 text-green-600" />
+              <span className="text-xs font-medium">REST API</span>
             </div>
           ),
         },
@@ -192,8 +192,8 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
           background: "#f0fdf4",
           border: "1px solid #bbf7d0",
           borderRadius: "8px",
-          width: 140,
-          height: 36,
+          width: 150,
+          height: 40,
         },
       },
       {
@@ -203,8 +203,8 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         data: {
           label: (
             <div className="flex items-center gap-1.5">
-              <FileText className="h-3.5 w-3.5 text-amber-600" />
-              <span className="text-[10px] font-medium">File System</span>
+              <FileText className="h-4 w-4 text-amber-600" />
+              <span className="text-xs font-medium">File System</span>
             </div>
           ),
         },
@@ -212,8 +212,8 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
           background: "#fffbeb",
           border: "1px solid #fde68a",
           borderRadius: "8px",
-          width: 140,
-          height: 36,
+          width: 150,
+          height: 40,
         },
       },
     ],
@@ -228,7 +228,7 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         source: "mcp-client",
         target: MCP_SERVERS[0].id,
         label: "JSON-RPC",
-        labelStyle: { fontSize: 9, fill: "#64748b" },
+        labelStyle: { fontSize: 11, fill: "#64748b" },
         style: { stroke: MCP_SERVER_COLORS.database.accent, strokeWidth: 2 },
         animated: true,
       },
@@ -238,7 +238,7 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         source: "mcp-client",
         target: MCP_SERVERS[1].id,
         label: "JSON-RPC",
-        labelStyle: { fontSize: 9, fill: "#64748b" },
+        labelStyle: { fontSize: 11, fill: "#64748b" },
         style: { stroke: MCP_SERVER_COLORS.api.accent, strokeWidth: 2 },
         animated: true,
       },
@@ -248,7 +248,7 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         source: "mcp-client",
         target: MCP_SERVERS[2].id,
         label: "JSON-RPC",
-        labelStyle: { fontSize: 9, fill: "#64748b" },
+        labelStyle: { fontSize: 11, fill: "#64748b" },
         style: { stroke: MCP_SERVER_COLORS.file.accent, strokeWidth: 2 },
         animated: true,
       },
@@ -368,7 +368,7 @@ export function MCPArchitecture({ className }: MCPArchitectureProps) {
         </div>
       )}
 
-      <p className="mt-2 text-center text-[10px] text-muted-foreground">
+      <p className="mt-2 text-center text-xs text-muted-foreground">
         Click any node to see details
       </p>
     </div>

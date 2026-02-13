@@ -1,38 +1,137 @@
 import { motion } from "framer-motion";
-import { FileCheck, Scissors, BarChart3, RefreshCw } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import {
+  Brain,
+  Wrench,
+  RefreshCw,
+  Database as DatabaseIcon,
+  Globe,
+  FileText,
+  Search,
+} from "lucide-react";
 import { InfoPanel } from "@/components/presentation/InfoPanel";
 import { InteractiveArea } from "@/components/presentation/InteractiveArea";
-import { RAG_BEST_PRACTICES } from "../data";
 
-const STAGGER_DELAY = 0.2;
+const STAGGER_DELAY = 0.15;
 const ANIMATION_DURATION = 0.4;
 
-/** Icons for each best practice card */
-const PRACTICE_ICONS: LucideIcon[] = [
-  FileCheck,
-  Scissors,
-  BarChart3,
-  RefreshCw,
-];
+/** Static architecture diagram for the summary */
+function ArchitectureDiagram() {
+  const tools = [
+    { icon: DatabaseIcon, label: "SQL Database" },
+    { icon: Globe, label: "REST API" },
+    { icon: FileText, label: "File System" },
+    { icon: Search, label: "Web Search" },
+  ];
 
-/** Color classes for each best practice card */
-const PRACTICE_COLORS = [
-  "bg-blue-100 text-blue-600 border-blue-200",
-  "bg-violet-100 text-violet-600 border-violet-200",
-  "bg-amber-100 text-amber-600 border-amber-200",
-  "bg-green-100 text-green-600 border-green-200",
-] as const;
+  return (
+    <div className="flex flex-col items-center gap-6 py-4">
+      {/* Agent container */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="flex w-full max-w-md flex-col items-center gap-4 rounded-2xl border-2 border-primary/20 bg-primary/5 p-6"
+      >
+        <span className="text-xs font-bold uppercase tracking-wide text-primary">
+          AI Agent
+        </span>
+
+        {/* LLM core */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: ANIMATION_DURATION }}
+          className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 border-2 border-purple-300"
+        >
+          <Brain className="h-8 w-8 text-purple-600" />
+        </motion.div>
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.3 }}
+          className="text-sm font-semibold text-purple-700"
+        >
+          LLM Core
+        </motion.span>
+
+        {/* Reasoning Loop */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: ANIMATION_DURATION }}
+          className="flex items-center gap-2 rounded-full bg-amber-100 px-4 py-2 border border-amber-200"
+        >
+          <RefreshCw className="h-4 w-4 text-amber-600" />
+          <span className="text-xs font-medium text-amber-700">
+            Think &rarr; Act &rarr; Observe &rarr; Repeat
+          </span>
+        </motion.div>
+
+        {/* Memory */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: ANIMATION_DURATION }}
+          className="flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 border border-green-200"
+        >
+          <DatabaseIcon className="h-4 w-4 text-green-600" />
+          <span className="text-xs font-medium text-green-700">
+            Conversation History + Context
+          </span>
+        </motion.div>
+      </motion.div>
+
+      {/* Connection line */}
+      <motion.div
+        initial={{ scaleY: 0 }}
+        animate={{ scaleY: 1 }}
+        transition={{ delay: 0.9, duration: 0.3 }}
+        className="h-6 w-px bg-border origin-top"
+      />
+
+      {/* Tools row */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.0, duration: ANIMATION_DURATION }}
+        className="flex flex-col items-center gap-3"
+      >
+        <div className="flex items-center gap-2">
+          <Wrench className="h-4 w-4 text-blue-600" />
+          <span className="text-xs font-bold uppercase tracking-wide text-blue-700">
+            Tools
+          </span>
+        </div>
+        <div className="flex flex-wrap justify-center gap-3">
+          {tools.map((tool, index) => (
+            <motion.div
+              key={tool.label}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                delay: 1.1 + index * STAGGER_DELAY,
+                duration: 0.3,
+              }}
+              className="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 border border-blue-200"
+            >
+              <tool.icon className="h-4 w-4 text-blue-600" />
+              <span className="text-xs font-medium text-blue-700">
+                {tool.label}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 export function Step6Summary() {
   return (
     <div className="flex gap-8">
       {/* Left: Info panel (~40%) */}
       <div className="w-2/5 shrink-0">
-        <InfoPanel
-          title="Key Takeaways"
-          highlights={["RAG", "Grounding", "Knowledge Base"]}
-        >
+        <InfoPanel title="Key Takeaways" highlights={["Agent", "LLM", "Tools"]}>
           <ul className="list-none space-y-4 pl-0">
             <motion.li
               initial={{ opacity: 0, x: -10 }}
@@ -40,11 +139,10 @@ export function Step6Summary() {
               transition={{ delay: 0.2, duration: ANIMATION_DURATION }}
             >
               <span className="font-semibold text-foreground">
-                RAG grounds LLM answers in real documents.
+                An AI agent extends LLMs with real-world capabilities.
               </span>{" "}
-              Instead of relying on potentially outdated training data, the model
-              generates responses based on retrieved, up-to-date content from
-              your knowledge base.
+              By adding tools, a reasoning loop, and memory, agents can access
+              databases, call APIs, and perform actions that a plain LLM cannot.
             </motion.li>
 
             <motion.li
@@ -56,10 +154,11 @@ export function Step6Summary() {
               }}
             >
               <span className="font-semibold text-foreground">
-                Retrieval quality determines answer quality.
+                The reasoning loop enables multi-step problem solving.
               </span>{" "}
-              The best LLM in the world cannot produce a good answer if the
-              retrieval step returns irrelevant or incomplete documents.
+              Instead of generating a single response, agents think about what
+              they need, take actions, observe results, and iterate until the
+              task is complete.
             </motion.li>
 
             <motion.li
@@ -71,10 +170,11 @@ export function Step6Summary() {
               }}
             >
               <span className="font-semibold text-foreground">
-                RAG is cheaper and faster than fine-tuning.
+                Tools give agents real-world capabilities.
               </span>{" "}
-              Updating knowledge is as simple as re-indexing documents. No
-              expensive retraining or GPU hours required.
+              SQL databases, REST APIs, file systems, web search - tools are the
+              bridge between the LLM's intelligence and external data and
+              systems.
             </motion.li>
 
             <motion.li
@@ -86,10 +186,10 @@ export function Step6Summary() {
               }}
             >
               <span className="font-semibold text-foreground">
-                Citations enable trust and verification.
+                Memory provides continuity and context.
               </span>{" "}
-              Because RAG answers reference specific source documents, users can
-              verify claims and build trust in the system's outputs.
+              Agents track conversation history and accumulated context, allowing
+              them to make informed decisions across multiple interactions.
             </motion.li>
           </ul>
         </InfoPanel>
@@ -98,43 +198,10 @@ export function Step6Summary() {
       {/* Right: Interactive area (~60%) */}
       <div className="flex-1">
         <InteractiveArea>
-          <p className="mb-4 text-center text-sm font-medium text-muted-foreground">
-            RAG Best Practices
+          <p className="mb-2 text-center text-sm font-medium text-muted-foreground">
+            Complete Agent Architecture
           </p>
-          <div className="grid grid-cols-2 gap-4">
-            {RAG_BEST_PRACTICES.map((practice, index) => {
-              const Icon = PRACTICE_ICONS[index];
-              const color = PRACTICE_COLORS[index];
-
-              return (
-                <motion.div
-                  key={practice.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: 0.3 + index * STAGGER_DELAY,
-                    duration: ANIMATION_DURATION,
-                    ease: "easeOut",
-                  }}
-                  className="flex flex-col gap-3 rounded-xl border bg-card p-5 shadow-sm"
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${color}`}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="text-sm font-bold text-foreground">
-                      {practice.title}
-                    </h3>
-                  </div>
-                  <p className="text-xs leading-relaxed text-muted-foreground">
-                    {practice.description}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </div>
+          <ArchitectureDiagram />
         </InteractiveArea>
       </div>
     </div>

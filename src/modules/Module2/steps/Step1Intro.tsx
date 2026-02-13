@@ -1,189 +1,144 @@
 import { motion } from "framer-motion";
-import { User, Frown, Users, ArrowRight } from "lucide-react";
 import { InfoPanel } from "@/components/presentation/InfoPanel";
 import { InteractiveArea } from "@/components/presentation/InteractiveArea";
-import { MULTI_AGENT_BENEFITS } from "../data";
 
-const ANIMATION_DELAY_BASE = 0.3;
-const ANIMATION_DELAY_STEP = 0.4;
-const ANIMATION_DURATION = 0.5;
+const STAGGER_DELAY = 0.15;
+const ANIMATION_DURATION = 0.4;
 
-/** Animated "one person overwhelmed" figure */
-function OverwhelmedFigure() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: ANIMATION_DELAY_BASE, duration: ANIMATION_DURATION }}
-      className="flex flex-col items-center gap-2"
-    >
-      <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-red-300 bg-red-50">
-        <User className="h-8 w-8 text-red-500" />
-        <Frown className="absolute -bottom-1 -right-1 h-6 w-6 text-red-400" />
-      </div>
-      <span className="text-sm font-medium text-red-600">One does everything</span>
-      <div className="mt-1 flex flex-wrap justify-center gap-1">
-        {["Analyze", "Query", "Report", "Chart"].map((task) => (
-          <span
-            key={task}
-            className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] text-red-600"
-          >
-            {task}
-          </span>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
-/** Animated "team of specialists" figures */
-function TeamFigures() {
-  const specialists = [
-    { color: "purple", label: "Analyst" },
-    { color: "green", label: "Engineer" },
-    { color: "amber", label: "Reporter" },
-  ];
-
-  const colorMap: Record<string, { bg: string; border: string; text: string; badge: string }> = {
-    purple: {
-      bg: "bg-purple-50",
-      border: "border-purple-300",
-      text: "text-purple-600",
-      badge: "bg-purple-100 text-purple-700",
-    },
-    green: {
-      bg: "bg-green-50",
-      border: "border-green-300",
-      text: "text-green-600",
-      badge: "bg-green-100 text-green-700",
-    },
-    amber: {
-      bg: "bg-amber-50",
-      border: "border-amber-300",
-      text: "text-amber-600",
-      badge: "bg-amber-100 text-amber-700",
-    },
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{
-        delay: ANIMATION_DELAY_BASE + ANIMATION_DELAY_STEP * 3,
-        duration: ANIMATION_DURATION,
-      }}
-      className="flex flex-col items-center gap-2"
-    >
-      <div className="flex gap-3">
-        {specialists.map((spec, i) => {
-          const colors = colorMap[spec.color];
-          return (
-            <motion.div
-              key={spec.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay:
-                  ANIMATION_DELAY_BASE +
-                  ANIMATION_DELAY_STEP * 3 +
-                  i * 0.2,
-                duration: ANIMATION_DURATION,
-              }}
-              className="flex flex-col items-center gap-1"
-            >
-              <div
-                className={`flex h-14 w-14 items-center justify-center rounded-full border-2 ${colors.bg} ${colors.border}`}
-              >
-                <Users className={`h-6 w-6 ${colors.text}`} />
-              </div>
-              <span
-                className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${colors.badge}`}
-              >
-                {spec.label}
-              </span>
-            </motion.div>
-          );
-        })}
-      </div>
-      <span className="text-sm font-medium text-green-600">
-        Team of specialists
-      </span>
-    </motion.div>
-  );
-}
+const CONTEXT_PARTS = [
+  {
+    label: "System Prompt",
+    description: "Instructions, persona, tool definitions",
+    color: "bg-violet-100 border-violet-300 text-violet-800",
+    tokens: "~500-2000",
+  },
+  {
+    label: "Conversation History",
+    description: "Previous user/assistant messages",
+    color: "bg-blue-100 border-blue-300 text-blue-800",
+    tokens: "Variable",
+  },
+  {
+    label: "Retrieved Context (RAG)",
+    description: "Documents, chunks, tool results",
+    color: "bg-emerald-100 border-emerald-300 text-emerald-800",
+    tokens: "~1000-5000",
+  },
+  {
+    label: "Current User Message",
+    description: "The latest query or instruction",
+    color: "bg-sky-100 border-sky-300 text-sky-800",
+    tokens: "~50-500",
+  },
+  {
+    label: "Response (Output)",
+    description: "Tokens the model generates",
+    color: "bg-amber-100 border-amber-300 text-amber-800",
+    tokens: "~100-4096",
+  },
+] as const;
 
 export function Step1Intro() {
   return (
     <div className="flex gap-8">
-      {/* Left: Info panel (~40%) */}
       <div className="w-2/5 shrink-0">
         <InfoPanel
-          title="Why Multiple Agents?"
-          highlights={["Specialization", "Scalability", "Collaboration"]}
+          title="What is a Context Window?"
+          highlights={["Token Limit", "Working Memory", "Input + Output"]}
         >
           <p>
-            A single AI agent can handle simple tasks, but complex real-world
-            problems often require different types of expertise. Just like a
-            company has specialized teams, we can create specialized agents.
+            The <strong>context window</strong> is the maximum number of tokens
+            an LLM can process in a single request. Think of it as the
+            model&apos;s <strong>working memory</strong> -- everything it can
+            &quot;see&quot; at once.
           </p>
-          <ul className="list-disc space-y-2 pl-5">
-            {MULTI_AGENT_BENEFITS.map((benefit) => (
-              <li key={benefit.title}>
-                <span className="font-medium text-foreground">
-                  {benefit.title}:
-                </span>{" "}
-                {benefit.description}
-              </li>
-            ))}
-          </ul>
           <p>
-            In this module, we will see how three specialized agents collaborate
-            to answer a complex data question that would overwhelm a single
-            agent.
+            Every piece of information sent to the model counts against this
+            limit: the system prompt, conversation history, retrieved documents,
+            the user&apos;s message, and the model&apos;s own response.
+          </p>
+          <p>
+            <strong>Tokens</strong> are the basic units of text that LLMs work
+            with. A token is roughly 3/4 of a word in English -- so 1000 tokens
+            is approximately 750 words.
+          </p>
+          <p>
+            If the total input plus the desired output exceeds the context
+            window, the request will either fail or require an{" "}
+            <strong>overflow strategy</strong> to manage.
           </p>
         </InfoPanel>
       </div>
 
-      {/* Right: Interactive area (~60%) */}
       <div className="flex-1">
-        <InteractiveArea className="flex h-full flex-col items-center justify-center">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.4 }}
-            className="mb-8 text-center text-sm font-medium text-muted-foreground"
-          >
-            Single agent vs. team of specialists
-          </motion.p>
+        <InteractiveArea className="space-y-5">
+          <p className="text-center text-sm font-medium text-muted-foreground">
+            Anatomy of a Context Window
+          </p>
 
-          <div className="flex items-center gap-8">
-            <OverwhelmedFigure />
+          {/* Visual context window diagram */}
+          <div className="rounded-lg border bg-muted/30 p-4">
+            <div className="space-y-3">
+              {CONTEXT_PARTS.map((part, index) => (
+                <motion.div
+                  key={part.label}
+                  initial={{ opacity: 0, x: -15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: index * STAGGER_DELAY,
+                    duration: ANIMATION_DURATION,
+                  }}
+                  className={`flex items-center justify-between rounded-md border px-4 py-3 ${part.color}`}
+                >
+                  <div>
+                    <p className="text-sm font-semibold">{part.label}</p>
+                    <p className="text-xs opacity-80">{part.description}</p>
+                  </div>
+                  <span className="text-xs font-medium tabular-nums">
+                    {part.tokens}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
 
+            {/* Total bar */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{
-                delay: ANIMATION_DELAY_BASE + ANIMATION_DELAY_STEP * 2,
+                delay: CONTEXT_PARTS.length * STAGGER_DELAY + 0.2,
                 duration: ANIMATION_DURATION,
               }}
+              className="mt-4 flex items-center justify-between rounded-md border-2 border-dashed border-primary/40 bg-primary/5 px-4 py-3"
             >
-              <ArrowRight className="h-8 w-8 text-muted-foreground" />
+              <span className="text-sm font-semibold text-primary">
+                Total Context Window
+              </span>
+              <span className="text-sm font-bold tabular-nums text-primary">
+                = All of the above must fit
+              </span>
             </motion.div>
-
-            <TeamFigures />
           </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 3.0, duration: 0.6 }}
-            className="mt-8 text-center text-sm text-muted-foreground"
+          {/* Analogy note */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: CONTEXT_PARTS.length * STAGGER_DELAY + 0.5,
+              duration: ANIMATION_DURATION,
+            }}
+            className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 text-center"
           >
-            Breaking complex tasks into specialized roles
-            <br />
-            improves quality, speed, and maintainability.
-          </motion.p>
+            <p className="text-sm font-medium text-foreground">
+              Analogy: The context window is like a desk.
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              You can only spread out so many documents at once. If you need
+              more, you have to put some away -- or summarize them on a sticky
+              note.
+            </p>
+          </motion.div>
         </InteractiveArea>
       </div>
     </div>

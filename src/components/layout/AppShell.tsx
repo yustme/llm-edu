@@ -4,6 +4,7 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ModuleNav } from "./ModuleNav";
 import { LAYOUT } from "@/config/theme.config";
+import { usePresentationStore } from "@/stores/presentation.store";
 
 /** Breakpoint in pixels below which the sidebar auto-collapses */
 const COLLAPSE_BREAKPOINT_PX = LAYOUT.sidebarWidthPx + LAYOUT.contentMinWidthPx;
@@ -13,6 +14,7 @@ const COLLAPSED_WIDTH_PX = 56;
 
 export function AppShell() {
   const [collapsed, setCollapsed] = useState(false);
+  const fontScale = usePresentationStore((s) => s.fontScale);
 
   const checkWidth = useCallback(() => {
     if (window.innerWidth < COLLAPSE_BREAKPOINT_PX) {
@@ -52,7 +54,7 @@ export function AppShell() {
 
       <main
         className="min-h-screen transition-[margin-left] duration-200"
-        style={{ marginLeft: sidebarWidth }}
+        style={{ marginLeft: sidebarWidth / (fontScale / 100), zoom: fontScale / 100 }}
       >
         <Outlet />
       </main>

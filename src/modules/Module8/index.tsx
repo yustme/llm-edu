@@ -6,10 +6,10 @@ import { StepProgress } from "@/components/layout/StepProgress";
 import { StepControls } from "@/components/layout/StepControls";
 import { SlideContainer } from "@/components/presentation/SlideContainer";
 import { Step1Intro } from "./steps/Step1Intro";
-import { Step2InputGuardrails } from "./steps/Step2InputGuardrails";
-import { Step3OutputGuardrails } from "./steps/Step3OutputGuardrails";
-import { Step4WithoutGuardrails } from "./steps/Step4WithoutGuardrails";
-import { Step5WithGuardrails } from "./steps/Step5WithGuardrails";
+import { Step2Sequential } from "./steps/Step2Sequential";
+import { Step3Parallel } from "./steps/Step3Parallel";
+import { Step4Router } from "./steps/Step4Router";
+import { Step5EvaluatorOptimizer } from "./steps/Step5EvaluatorOptimizer";
 import { Step6Summary } from "./steps/Step6Summary";
 import { STEP_TITLES } from "./data";
 
@@ -21,13 +21,13 @@ function StepContent({ step }: { step: number }) {
     case 1:
       return <Step1Intro />;
     case 2:
-      return <Step2InputGuardrails />;
+      return <Step2Sequential />;
     case 3:
-      return <Step3OutputGuardrails />;
+      return <Step3Parallel />;
     case 4:
-      return <Step4WithoutGuardrails />;
+      return <Step4Router />;
     case 5:
-      return <Step5WithGuardrails />;
+      return <Step5EvaluatorOptimizer />;
     case 6:
       return <Step6Summary />;
     default:

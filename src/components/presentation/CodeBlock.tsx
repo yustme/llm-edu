@@ -2,7 +2,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { cn } from "@/lib/utils";
 
-type CodeLanguage = "json" | "sql" | "yaml" | "typescript";
+type CodeLanguage = "json" | "sql" | "yaml" | "typescript" | "python";
 
 interface CodeBlockProps {
   code: string;

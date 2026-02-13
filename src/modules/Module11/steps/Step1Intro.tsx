@@ -1,79 +1,148 @@
 import { motion } from "framer-motion";
+import { FileText, Scissors, Box, Database } from "lucide-react";
 import { InfoPanel } from "@/components/presentation/InfoPanel";
 import { InteractiveArea } from "@/components/presentation/InteractiveArea";
-import { CodeBlock } from "@/components/presentation/CodeBlock";
-import { SQL_EXAMPLES } from "../data";
 
 const STAGGER_DELAY = 0.15;
 const ANIMATION_DURATION = 0.4;
+
+const PIPELINE_STEPS = [
+  {
+    icon: FileText,
+    label: "Large Document",
+    description: "PDF, article, or knowledge base entry too large for a single embedding",
+    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300",
+  },
+  {
+    icon: Scissors,
+    label: "Chunking",
+    description: "Split into smaller, meaningful pieces using a chosen strategy",
+    color: "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300",
+  },
+  {
+    icon: Box,
+    label: "Embeddings",
+    description: "Each chunk is converted to a vector by the embedding model",
+    color: "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300",
+  },
+  {
+    icon: Database,
+    label: "Vector DB",
+    description: "Vectors are stored and indexed for fast similarity search",
+    color: "bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300",
+  },
+] as const;
+
+const QUALITY_IMPACTS = [
+  {
+    factor: "Retrieval Precision",
+    description: "Better chunks mean more relevant search results",
+  },
+  {
+    factor: "Answer Accuracy",
+    description: "Correct context leads to correct LLM responses",
+  },
+  {
+    factor: "Token Efficiency",
+    description: "Right-sized chunks avoid wasting context window tokens",
+  },
+  {
+    factor: "Cost Optimization",
+    description: "Fewer irrelevant chunks means fewer embedding and LLM API calls",
+  },
+] as const;
 
 export function Step1Intro() {
   return (
     <div className="flex gap-8">
       <div className="w-2/5 shrink-0">
         <InfoPanel
-          title="What is Text-to-SQL?"
-          highlights={["Natural Language", "SQL Generation", "Schema Awareness"]}
+          title="Why Chunking Matters"
+          highlights={["RAG Pipeline", "Embeddings", "Retrieval Quality"]}
         >
           <p>
-            Text-to-SQL is the task of translating <strong>natural language
-            questions</strong> into executable <strong>SQL queries</strong>.
-            It allows non-technical users to query databases using plain English.
+            Documents in a knowledge base are typically too large to embed as a
+            single vector. Embedding models have <strong>token limits</strong>,
+            and stuffing an entire document into one vector dilutes the
+            semantic signal.
           </p>
-          <p>Why is it hard?</p>
-          <ul className="list-disc space-y-1 pl-5">
-            <li>
-              <strong>Ambiguity</strong> - "revenue" could mean gross, net, or
-              after returns depending on context
-            </li>
-            <li>
-              <strong>Schema knowledge</strong> - the model must know table
-              names, column types, and relationships
-            </li>
-            <li>
-              <strong>SQL correctness</strong> - generated queries must be
-              syntactically and semantically valid
-            </li>
-            <li>
-              <strong>Security</strong> - preventing SQL injection and
-              unauthorized data access
-            </li>
-          </ul>
           <p>
-            AI agents solve this by combining LLM reasoning with schema context
-            and tool execution.
+            <strong>Chunking</strong> is the process of splitting documents into
+            smaller pieces before creating embeddings. The quality of your
+            chunks directly impacts the quality of your entire RAG pipeline.
           </p>
+          <p>
+            Poor chunking leads to irrelevant retrievals and hallucinated
+            answers. Good chunking preserves context and makes every retrieved
+            piece meaningful.
+          </p>
+          <p>How chunking affects RAG quality:</p>
+          <ul className="list-disc space-y-1 pl-5">
+            {QUALITY_IMPACTS.map((item) => (
+              <li key={item.factor}>
+                <strong>{item.factor}</strong> - {item.description}
+              </li>
+            ))}
+          </ul>
         </InfoPanel>
       </div>
 
       <div className="flex-1">
-        <InteractiveArea className="space-y-4">
+        <InteractiveArea className="space-y-6">
           <p className="text-center text-sm font-medium text-muted-foreground">
-            Example Translations
+            Document Processing Pipeline
           </p>
-          <div className="space-y-4">
-            {SQL_EXAMPLES.map((example, index) => (
-              <motion.div
-                key={example.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: index * STAGGER_DELAY,
-                  duration: ANIMATION_DURATION,
-                }}
-                className="space-y-2"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                    {index + 1}
-                  </span>
-                  <p className="text-sm font-medium text-foreground">
-                    &ldquo;{example.question}&rdquo;
-                  </p>
-                </div>
-                <CodeBlock code={example.sql} language="sql" title={example.description} />
-              </motion.div>
-            ))}
+
+          {/* Pipeline diagram */}
+          <div className="flex flex-col items-center gap-3">
+            {PIPELINE_STEPS.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <motion.div
+                  key={step.label}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: index * STAGGER_DELAY + 0.2,
+                    duration: ANIMATION_DURATION,
+                  }}
+                  className="w-full"
+                >
+                  <div className="flex items-center gap-4 rounded-xl border bg-card px-5 py-4 shadow-sm">
+                    <div
+                      className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${step.color}`}
+                    >
+                      <Icon className="size-5" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-foreground">
+                        {step.label}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {step.description}
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-muted-foreground/50">
+                      {index + 1}
+                    </span>
+                  </div>
+                  {/* Arrow connector */}
+                  {index < PIPELINE_STEPS.length - 1 && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{
+                        delay: index * STAGGER_DELAY + 0.4,
+                        duration: 0.2,
+                      }}
+                      className="flex justify-center py-1"
+                    >
+                      <div className="h-4 w-px bg-border" />
+                    </motion.div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </InteractiveArea>
       </div>

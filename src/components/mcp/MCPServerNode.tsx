@@ -61,8 +61,8 @@ function MCPServerNodeComponent({ data }: NodeProps<MCPServerNodeType>) {
           <Icon className={cn(NODE_ICON_SIZE, colors.text)} />
         </div>
         <div>
-          <div className="text-xs font-semibold leading-tight">{label}</div>
-          <div className="text-[10px] text-muted-foreground">v{version}</div>
+          <div className="text-sm font-semibold leading-tight">{label}</div>
+          <div className="text-xs text-muted-foreground">v{version}</div>
         </div>
       </div>
 
@@ -72,7 +72,7 @@ function MCPServerNodeComponent({ data }: NodeProps<MCPServerNodeType>) {
           <span
             key={cap}
             className={cn(
-              "rounded px-1.5 py-0.5 text-[9px] font-medium",
+              "rounded px-1.5 py-0.5 text-[11px] font-medium",
               colors.badgeBg,
               colors.badgeText,
             )}

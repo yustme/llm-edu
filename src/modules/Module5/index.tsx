@@ -6,9 +6,9 @@ import { StepProgress } from "@/components/layout/StepProgress";
 import { StepControls } from "@/components/layout/StepControls";
 import { SlideContainer } from "@/components/presentation/SlideContainer";
 import { Step1Intro } from "./steps/Step1Intro";
-import { Step2Architecture } from "./steps/Step2Architecture";
-import { Step3WithoutRAG } from "./steps/Step3WithoutRAG";
-import { Step4WithRAG } from "./steps/Step4WithRAG";
+import { Step2PlainLLM } from "./steps/Step2PlainLLM";
+import { Step3WhatIsAgent } from "./steps/Step3WhatIsAgent";
+import { Step4AgentDemo } from "./steps/Step4AgentDemo";
 import { Step5Comparison } from "./steps/Step5Comparison";
 import { Step6Summary } from "./steps/Step6Summary";
 import { STEP_TITLES } from "./data";
@@ -21,11 +21,11 @@ function StepContent({ step }: { step: number }) {
     case 1:
       return <Step1Intro />;
     case 2:
-      return <Step2Architecture />;
+      return <Step2PlainLLM />;
     case 3:
-      return <Step3WithoutRAG />;
+      return <Step3WhatIsAgent />;
     case 4:
-      return <Step4WithRAG />;
+      return <Step4AgentDemo />;
     case 5:
       return <Step5Comparison />;
     case 6:

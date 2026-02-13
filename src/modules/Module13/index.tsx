@@ -6,10 +6,10 @@ import { StepProgress } from "@/components/layout/StepProgress";
 import { StepControls } from "@/components/layout/StepControls";
 import { SlideContainer } from "@/components/presentation/SlideContainer";
 import { Step1Intro } from "./steps/Step1Intro";
-import { Step2TraditionalETL } from "./steps/Step2TraditionalETL";
-import { Step3AIAssisted } from "./steps/Step3AIAssisted";
-import { Step4SchemaMappingDemo } from "./steps/Step4SchemaMappingDemo";
-import { Step5TransformDemo } from "./steps/Step5TransformDemo";
+import { Step2Construction } from "./steps/Step2Construction";
+import { Step3Communities } from "./steps/Step3Communities";
+import { Step4QueryDemo } from "./steps/Step4QueryDemo";
+import { Step5Comparison } from "./steps/Step5Comparison";
 import { Step6Summary } from "./steps/Step6Summary";
 import { STEP_TITLES } from "./data";
 
@@ -20,13 +20,13 @@ function StepContent({ step }: { step: number }) {
     case 1:
       return <Step1Intro />;
     case 2:
-      return <Step2TraditionalETL />;
+      return <Step2Construction />;
     case 3:
-      return <Step3AIAssisted />;
+      return <Step3Communities />;
     case 4:
-      return <Step4SchemaMappingDemo />;
+      return <Step4QueryDemo />;
     case 5:
-      return <Step5TransformDemo />;
+      return <Step5Comparison />;
     case 6:
       return <Step6Summary />;
     default:

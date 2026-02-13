@@ -6,10 +6,10 @@ import { StepProgress } from "@/components/layout/StepProgress";
 import { StepControls } from "@/components/layout/StepControls";
 import { SlideContainer } from "@/components/presentation/SlideContainer";
 import { Step1Intro } from "./steps/Step1Intro";
-import { Step2Pipeline } from "./steps/Step2Pipeline";
-import { Step3SchemaContext } from "./steps/Step3SchemaContext";
-import { Step4SimpleDemo } from "./steps/Step4SimpleDemo";
-import { Step5ComplexDemo } from "./steps/Step5ComplexDemo";
+import { Step2BasicStrategies } from "./steps/Step2BasicStrategies";
+import { Step3AdvancedStrategies } from "./steps/Step3AdvancedStrategies";
+import { Step4ChunkingDemo } from "./steps/Step4ChunkingDemo";
+import { Step5Tradeoffs } from "./steps/Step5Tradeoffs";
 import { Step6Summary } from "./steps/Step6Summary";
 import { STEP_TITLES } from "./data";
 
@@ -20,13 +20,13 @@ function StepContent({ step }: { step: number }) {
     case 1:
       return <Step1Intro />;
     case 2:
-      return <Step2Pipeline />;
+      return <Step2BasicStrategies />;
     case 3:
-      return <Step3SchemaContext />;
+      return <Step3AdvancedStrategies />;
     case 4:
-      return <Step4SimpleDemo />;
+      return <Step4ChunkingDemo />;
     case 5:
-      return <Step5ComplexDemo />;
+      return <Step5Tradeoffs />;
     case 6:
       return <Step6Summary />;
     default:

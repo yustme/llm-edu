@@ -18,7 +18,7 @@ export type MessageEdgeType = Edge<MessageEdgeData, "messageEdge">;
 
 const ACTIVE_STROKE_WIDTH = 2.5;
 const INACTIVE_STROKE_WIDTH = 1.5;
-const LABEL_FONT_SIZE = 10;
+const LABEL_FONT_SIZE = 12;
 const LABEL_MAX_WIDTH = 140;
 const DASH_PATTERN = "6 4";
 

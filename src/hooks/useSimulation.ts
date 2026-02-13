@@ -49,6 +49,7 @@ export function useSimulation(steps: SimulationStep[]) {
 
     return () => {
       engine.destroy();
+      useSimulationStore.getState().setSteps([]);
     };
   }, [steps]);
 

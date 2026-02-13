@@ -1,79 +1,123 @@
-/** Comparison table data: feature differences between LLM and Agent */
-export interface ComparisonRow {
-  feature: string;
-  llm: string;
-  agent: string;
-}
-
-export const COMPARISON_TABLE: ComparisonRow[] = [
-  {
-    feature: "Data Access",
-    llm: "No access to external data; limited to training data and conversation context",
-    agent: "Can query databases, call APIs, read files, and access real-time data via tools",
-  },
-  {
-    feature: "Reasoning",
-    llm: "Single-pass text generation without iterative problem solving",
-    agent: "Multi-step reasoning loop: Think, Act, Observe, repeat until solved",
-  },
-  {
-    feature: "Actions",
-    llm: "Can only generate text responses; cannot execute code or interact with systems",
-    agent: "Can execute SQL, call APIs, run code, send emails, and perform real-world actions",
-  },
-  {
-    feature: "Response Quality",
-    llm: "Generic, often apologetic responses when asked about specific data",
-    agent: "Data-driven, specific answers with actual numbers and contextual insights",
-  },
-];
-
 /** Step titles for the module navigation header */
 export const STEP_TITLES = [
-  "Introduction",
-  "Plain LLM Demo",
-  "What is an Agent?",
-  "Agent Demo",
-  "Comparison",
+  "Introduction to Tokenization",
+  "BPE Tokenizer",
+  "From Tokens to Vectors",
+  "Interactive Tokenizer Demo",
+  "Embedding Space",
   "Summary",
 ] as const;
 
 /** Step descriptions shown in the step progress area */
 export const STEP_DESCRIPTIONS = [
-  "LLMs are powerful, but they have limitations",
-  "See how a plain LLM handles a data question",
-  "Agent = LLM + Tools + Reasoning Loop + Memory",
-  "Watch an agent solve the same question step by step",
-  "Side-by-side comparison of LLM vs Agent responses",
-  "Key takeaways and architecture recap",
+  "Why machines need numbers, not text - the tokenization pipeline",
+  "How Byte Pair Encoding iteratively merges characters into subwords",
+  "Embedding lookup transforms token IDs into dense semantic vectors",
+  "Try the tokenizer yourself with different texts and languages",
+  "Visualize how similar words cluster together in vector space",
+  "Comparison of tokenization approaches and key takeaways",
 ] as const;
 
-/** Architecture diagram labels for the summary step */
-export const ARCHITECTURE_LABELS = {
-  llm: "LLM",
-  tools: "Tools",
-  reasoningLoop: "Reasoning Loop",
-  memory: "Memory",
-  toolExamples: ["SQL Database", "REST API", "File System", "Web Search"],
-  reasoningSteps: ["Think", "Act", "Observe"],
-  memoryTypes: ["Conversation History", "Context Window"],
-} as const;
+/** Pipeline stage for the intro animation */
+export interface PipelineStage {
+  id: string;
+  label: string;
+  content: string;
+  color: string;
+}
 
-/** Agent component descriptions for Step 3 */
-export const AGENT_COMPONENTS = {
-  tools: {
-    title: "Tools",
-    description:
-      "External capabilities the agent can invoke - run SQL queries, call APIs, read files, execute code, and interact with real-world systems.",
+/** Stages of the text-to-numbers pipeline */
+export const PIPELINE_STAGES: PipelineStage[] = [
+  {
+    id: "text",
+    label: "Raw Text",
+    content: '"Hello world"',
+    color: "bg-blue-100 border-blue-300 text-blue-700",
   },
-  reasoningLoop: {
-    title: "Reasoning Loop",
-    description:
-      "The Think-Act-Observe cycle that allows agents to break problems into steps, take actions, evaluate results, and iterate until the task is complete.",
+  {
+    id: "tokenizer",
+    label: "Tokenizer",
+    content: "BPE / WordPiece",
+    color: "bg-purple-100 border-purple-300 text-purple-700",
   },
-  memory: {
-    title: "Memory",
-    description:
-      "The agent maintains conversation history and accumulated context, allowing it to reference previous results and build on earlier reasoning.",
+  {
+    id: "ids",
+    label: "Token IDs",
+    content: "[15496, 995]",
+    color: "bg-green-100 border-green-300 text-green-700",
   },
-} as const;
+  {
+    id: "embeddings",
+    label: "Embeddings",
+    content: "[0.12, -0.34, ...]",
+    color: "bg-amber-100 border-amber-300 text-amber-700",
+  },
+  {
+    id: "model",
+    label: "LLM",
+    content: "Transformer",
+    color: "bg-red-100 border-red-300 text-red-700",
+  },
+];
+
+/** Tokenization approach for the comparison table */
+export interface TokenizationApproach {
+  id: string;
+  name: string;
+  example: string;
+  vocabSize: string;
+  pros: string[];
+  cons: string[];
+}
+
+/** Comparison data for character vs word vs subword tokenization */
+export const TOKENIZATION_APPROACHES: TokenizationApproach[] = [
+  {
+    id: "character",
+    name: "Character-level",
+    example: '"cat" -> ["c", "a", "t"]',
+    vocabSize: "~256",
+    pros: [
+      "Tiny vocabulary",
+      "Handles any text",
+      "No unknown tokens",
+    ],
+    cons: [
+      "Very long sequences",
+      "Hard to learn meaning",
+      "Slow processing",
+    ],
+  },
+  {
+    id: "word",
+    name: "Word-level",
+    example: '"the cat" -> ["the", "cat"]',
+    vocabSize: "~100,000+",
+    pros: [
+      "Intuitive splits",
+      "Short sequences",
+      "Easy to understand",
+    ],
+    cons: [
+      "Huge vocabulary",
+      "Cannot handle unseen words",
+      "Poor for morphology",
+    ],
+  },
+  {
+    id: "subword",
+    name: "Subword (BPE)",
+    example: '"unhappy" -> ["un", "happy"]',
+    vocabSize: "~30,000-100,000",
+    pros: [
+      "Balanced vocab size",
+      "Handles rare words",
+      "Captures morphology",
+    ],
+    cons: [
+      "Non-intuitive splits",
+      "Language-dependent",
+      "Requires training",
+    ],
+  },
+];

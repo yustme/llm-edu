@@ -1,152 +1,166 @@
+import { useMemo } from "react";
 import { motion } from "framer-motion";
+import { Monitor, Plug, Database, Globe, FileText, Server } from "lucide-react";
 import { InfoPanel } from "@/components/presentation/InfoPanel";
 import { InteractiveArea } from "@/components/presentation/InteractiveArea";
-import { PATTERN_COMPARISON } from "../data";
+import { KEY_TAKEAWAYS } from "../data";
+import { cn } from "@/lib/utils";
 
-const STAGGER_DELAY = 0.2;
 const ANIMATION_DURATION = 0.4;
+const STAGGER_DELAY = 0.15;
 
-/** Complexity badge color */
-function complexityColor(complexity: string): string {
-  switch (complexity) {
-    case "Low":
-      return "bg-green-100 text-green-700";
-    case "Medium":
-      return "bg-amber-100 text-amber-700";
-    case "High":
-      return "bg-red-100 text-red-700";
-    default:
-      return "bg-gray-100 text-gray-700";
-  }
+/** Static summary architecture diagram */
+function SummaryDiagram() {
+  const servers = [
+    {
+      Icon: Database,
+      label: "Database",
+      colorBg: "bg-blue-100 border-blue-300",
+      colorText: "text-blue-600",
+    },
+    {
+      Icon: Globe,
+      label: "API",
+      colorBg: "bg-green-100 border-green-300",
+      colorText: "text-green-600",
+    },
+    {
+      Icon: FileText,
+      label: "Files",
+      colorBg: "bg-amber-100 border-amber-300",
+      colorText: "text-amber-600",
+    },
+  ];
+
+  return (
+    <div className="flex flex-col items-center gap-4 py-4">
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1, duration: ANIMATION_DURATION }}
+        className="text-sm font-medium text-muted-foreground"
+      >
+        MCP Architecture Overview
+      </motion.p>
+
+      <div className="flex items-center gap-6">
+        {/* Host Application */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: ANIMATION_DURATION }}
+          className="flex flex-col items-center gap-2 rounded-xl border-2 border-slate-300 bg-slate-50 px-4 py-3"
+        >
+          <Monitor className="h-6 w-6 text-slate-600" />
+          <span className="text-xs font-semibold text-slate-700">
+            Host App
+          </span>
+          <div className="rounded-md border border-indigo-300 bg-indigo-50 px-3 py-1">
+            <span className="text-[10px] font-medium text-indigo-700">
+              MCP Client
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Protocol connection */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ delay: 0.5, duration: 0.3 }}
+          className="flex flex-col items-center gap-1"
+        >
+          <div className="h-0.5 w-16 bg-indigo-400" />
+          <div className="flex items-center gap-1">
+            <Plug className="h-3 w-3 text-indigo-500" />
+            <span className="text-[9px] font-medium text-indigo-600">MCP</span>
+          </div>
+        </motion.div>
+
+        {/* Servers column */}
+        <div className="flex flex-col gap-2">
+          {servers.map((server, i) => (
+            <motion.div
+              key={server.label}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                delay: 0.7 + i * STAGGER_DELAY,
+                duration: ANIMATION_DURATION,
+              }}
+              className="flex items-center gap-2"
+            >
+              <div
+                className={cn(
+                  "flex items-center gap-2 rounded-lg border-2 px-3 py-2",
+                  server.colorBg,
+                )}
+              >
+                <Server className={cn("h-3.5 w-3.5", server.colorText)} />
+                <span className="text-[10px] font-medium">{server.label}</span>
+              </div>
+              <div className="h-px w-4 bg-gray-300" />
+              <div
+                className={cn(
+                  "flex h-7 w-7 items-center justify-center rounded border",
+                  server.colorBg,
+                )}
+              >
+                <server.Icon className={cn("h-3.5 w-3.5", server.colorText)} />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.3, duration: 0.5 }}
+        className="max-w-md text-center text-xs text-muted-foreground"
+      >
+        One protocol connects any AI application to any data source or tool.
+        Build once, use everywhere.
+      </motion.p>
+    </div>
+  );
 }
 
 export function Step6Summary() {
+  const takeaways = useMemo(() => KEY_TAKEAWAYS, []);
+
   return (
     <div className="flex gap-8">
       {/* Left: Info panel (~40%) */}
       <div className="w-2/5 shrink-0">
         <InfoPanel
           title="Key Takeaways"
-          highlights={["Patterns", "Trade-offs", "Decision Framework"]}
+          highlights={["MCP", "Standardization", "Security"]}
         >
           <ul className="list-none space-y-4 pl-0">
-            <motion.li
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: ANIMATION_DURATION }}
-            >
-              <span className="font-semibold text-foreground">
-                Choose the pattern that fits your task structure.
-              </span>{" "}
-              Sequential for dependent steps, parallel for independent work,
-              router for varied query types, evaluator for quality-sensitive
-              outputs.
-            </motion.li>
-
-            <motion.li
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: 0.2 + STAGGER_DELAY,
-                duration: ANIMATION_DURATION,
-              }}
-            >
-              <span className="font-semibold text-foreground">
-                Patterns can be composed.
-              </span>{" "}
-              A router can dispatch to a sequential pipeline or a parallel
-              fan-out. An evaluator can wrap any other pattern to ensure quality.
-            </motion.li>
-
-            <motion.li
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: 0.2 + STAGGER_DELAY * 2,
-                duration: ANIMATION_DURATION,
-              }}
-            >
-              <span className="font-semibold text-foreground">
-                Start simple, add complexity when needed.
-              </span>{" "}
-              Begin with a single agent. If that is not enough, add tools. If
-              you need multiple agents, choose the simplest orchestration
-              pattern that solves your problem.
-            </motion.li>
-
-            <motion.li
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: 0.2 + STAGGER_DELAY * 3,
-                duration: ANIMATION_DURATION,
-              }}
-            >
-              <span className="font-semibold text-foreground">
-                Monitor and iterate.
-              </span>{" "}
-              Observe how your agents perform in production. Use the
-              evaluator-optimizer pattern to build in self-improvement, and
-              track latency to spot bottlenecks.
-            </motion.li>
+            {takeaways.map((takeaway, i) => (
+              <motion.li
+                key={takeaway.title}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  delay: 0.2 + i * STAGGER_DELAY,
+                  duration: ANIMATION_DURATION,
+                }}
+              >
+                <span className="font-semibold text-foreground">
+                  {takeaway.title}.
+                </span>{" "}
+                {takeaway.description}
+              </motion.li>
+            ))}
           </ul>
         </InfoPanel>
       </div>
 
       {/* Right: Interactive area (~60%) */}
       <div className="flex-1">
-        <InteractiveArea>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.3 }}
-            className="mb-4 text-center text-sm font-medium text-muted-foreground"
-          >
-            Pattern Comparison
-          </motion.p>
-
-          {/* Table header */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
-            className="grid grid-cols-4 gap-3 border-b pb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-          >
-            <span>Pattern</span>
-            <span>Best For</span>
-            <span>Complexity</span>
-            <span>Latency</span>
-          </motion.div>
-
-          {/* Table rows */}
-          <div className="divide-y">
-            {PATTERN_COMPARISON.map((row, index) => (
-              <motion.div
-                key={row.pattern}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.4 + index * STAGGER_DELAY,
-                  duration: ANIMATION_DURATION,
-                  ease: "easeOut",
-                }}
-                className="grid grid-cols-4 gap-3 py-4 text-sm"
-              >
-                <span className="font-semibold text-foreground">
-                  {row.pattern}
-                </span>
-                <span className="text-muted-foreground">{row.bestFor}</span>
-                <span>
-                  <span
-                    className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${complexityColor(row.complexity)}`}
-                  >
-                    {row.complexity}
-                  </span>
-                </span>
-                <span className="text-muted-foreground">{row.latency}</span>
-              </motion.div>
-            ))}
-          </div>
+        <InteractiveArea className="flex h-full flex-col items-center justify-center">
+          <SummaryDiagram />
         </InteractiveArea>
       </div>
     </div>
