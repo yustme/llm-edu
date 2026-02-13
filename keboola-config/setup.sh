@@ -1,8 +1,9 @@
 #!/bin/bash
-set -Eeuo pipefail
+set -euo pipefail
 
+echo "Installing dependencies..."
 cd /app
-
-# Dependencies are installed by Keboola platform (npm ci) before this script runs.
-# Build the production bundle into /app/dist.
+npm ci
+echo "Building production bundle..."
 npm run build
+echo "Setup complete."
