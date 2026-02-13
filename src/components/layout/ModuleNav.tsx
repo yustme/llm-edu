@@ -1,10 +1,12 @@
 import { NavLink } from "react-router";
-import { Home, Minus, Plus } from "lucide-react";
+import { Home, Minus, Plus, Sun, Moon, Monitor } from "lucide-react";
 import { modules } from "@/data/modules";
 import { cn } from "@/lib/utils";
 import { LAYOUT } from "@/config/theme.config";
 import { MODULE_GROUPS } from "@/config/app.config";
 import { usePresentationStore } from "@/stores/presentation.store";
+import { useThemeStore } from "@/stores/theme.store";
+import type { Theme } from "@/stores/theme.store";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -21,11 +23,24 @@ interface ModuleNavProps {
   collapsed?: boolean;
 }
 
+const THEME_CYCLE: Theme[] = ["system", "light", "dark"];
+const THEME_ICON = { system: Monitor, light: Sun, dark: Moon } as const;
+const THEME_LABEL = { system: "System", light: "Light", dark: "Dark" } as const;
+
 export function ModuleNav({ collapsed = false }: ModuleNavProps) {
   const sidebarWidth = collapsed ? COLLAPSED_WIDTH_PX : LAYOUT.sidebarWidthPx;
   const fontScale = usePresentationStore((s) => s.fontScale);
   const increaseFontScale = usePresentationStore((s) => s.increaseFontScale);
   const decreaseFontScale = usePresentationStore((s) => s.decreaseFontScale);
+  const theme = useThemeStore((s) => s.theme);
+  const setTheme = useThemeStore((s) => s.setTheme);
+
+  const cycleTheme = () => {
+    const idx = THEME_CYCLE.indexOf(theme);
+    setTheme(THEME_CYCLE[(idx + 1) % THEME_CYCLE.length]);
+  };
+
+  const ThemeIcon = THEME_ICON[theme];
 
   return (
     <aside
@@ -34,24 +49,42 @@ export function ModuleNav({ collapsed = false }: ModuleNavProps) {
     >
       <div className="p-4">
         {collapsed ? (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center justify-center rounded-md p-2 transition-colors",
-                    isActive
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                      : "hover:bg-sidebar-accent/50 text-sidebar-foreground"
-                  )
-                }
-              >
-                <Home className="size-4" />
-              </NavLink>
-            </TooltipTrigger>
-            <TooltipContent side="right">Home (0)</TooltipContent>
-          </Tooltip>
+          <div className="flex flex-col items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center justify-center rounded-md p-2 transition-colors",
+                      isActive
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "hover:bg-sidebar-accent/50 text-sidebar-foreground"
+                    )
+                  }
+                >
+                  <Home className="size-4" />
+                </NavLink>
+              </TooltipTrigger>
+              <TooltipContent side="right">Home (0)</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={cycleTheme}
+                  aria-label={`Theme: ${THEME_LABEL[theme]}`}
+                >
+                  <ThemeIcon className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                Theme: {THEME_LABEL[theme]}
+              </TooltipContent>
+            </Tooltip>
+          </div>
         ) : (
           <div className="flex items-center justify-between gap-1">
             <NavLink
@@ -92,6 +125,20 @@ export function ModuleNav({ collapsed = false }: ModuleNavProps) {
               >
                 <Plus className="size-3" />
               </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={cycleTheme}
+                    aria-label={`Theme: ${THEME_LABEL[theme]}`}
+                  >
+                    <ThemeIcon className="size-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{THEME_LABEL[theme]} theme</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         )}
